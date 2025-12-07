@@ -1,0 +1,23 @@
+/* CSS переменные для дизайна из Figma */
+
+:root {
+  /* Цвета из дизайна */
+  --color-background: #F6F5EC;
+  --color-button: #640000;
+  --color-text-primary: #000000;
+  --color-text-secondary: #ffffff;
+  
+  /* Шрифты */
+  --font-family-primary: 'Inter', sans-serif;
+  --font-family-secondary: 'Inter', sans-serif;
+  
+  /* Размеры */
+  --container-width: 1280px;
+  --spacing-unit: 8px;
+  --border-radius: 10px;
+  
+  /* Размеры карточек товаров */
+  --product-card-width: 236px;
+  --product-card-height: 287px;
+}
+

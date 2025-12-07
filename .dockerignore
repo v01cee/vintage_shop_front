@@ -1,0 +1,61 @@
+# Зависимости
+node_modules
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Сборка
+dist
+build
+.vite
+
+# Окружение
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Документация
+README.md
+*.md
+!README.md
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Временные файлы
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Backend (не нужен в образе фронтенда)
+backend
+venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Тесты
+coverage
+.nyc_output
+test
+tests
+*.test.js
+*.spec.js
+
