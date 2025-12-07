@@ -15,7 +15,12 @@ export default defineConfig({
   },
   preview: {
     host: '0.0.0.0',
-    port: process.env.PORT || 4173
+    port: process.env.PORT || 4173,
+    allowedHosts: [
+      'web-production-0e803.up.railway.app',
+      '.railway.app',
+      '.up.railway.app'
+    ]
   }
 })
 
