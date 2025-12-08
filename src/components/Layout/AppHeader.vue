@@ -61,13 +61,13 @@
         />
         <span class="orders-text">Заказы</span>
       </button>
-      <button class="cart-button" type="button" aria-label="Отзывы" @click="goToCart">
+      <button class="cart-button" type="button" aria-label="Корзина" @click="goToCart">
         <img 
           :src="currentCartIcon" 
-          alt="Отзывы" 
+          alt="Корзина" 
           class="cart-icon"
         />
-        <span class="cart-text">Отзывы</span>
+        <span class="cart-text">Корзина</span>
         <span v-if="cartStore.totalItems > 0" class="cart-badge">
           {{ cartStore.totalItems }}
         </span>
