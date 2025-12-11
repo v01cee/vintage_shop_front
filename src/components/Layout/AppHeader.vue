@@ -73,7 +73,7 @@
         </span>
       </button>
       <div class="info-banner">
-        <span class="info-banner-text">Покупай по ценам от поставщика. В три раза выгоднее чем в бутиках</span>
+        <span class="info-banner-text">Оригиналы по ценам от поставщика. Выгоднее чем в бутиках.</span>
         <div class="info-banner-contacts">
           <span class="info-banner-phone">+7 (495) 374-78-74</span>
           <button class="info-banner-icon" type="button" aria-label="Telegram">
