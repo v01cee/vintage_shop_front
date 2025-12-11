@@ -6,6 +6,7 @@
         <p class="login-text">
           Для доступа к личному кабинету необходимо <span class="login-link">войти</span>
         </p>
+        <button class="login-button" @click="openLoginModal">Войти</button>
       </div>
       <div class="recommended-section">
         <h2 class="recommended-title">Рекомендуем также</h2>
@@ -34,16 +35,51 @@
         </div>
       </div>
     </div>
+
+    <!-- Модальное окно входа/регистрации -->
+    <LoginModal 
+      :is-open="isLoginModalOpen" 
+      @close="closeLoginModal"
+      @login="handleLogin"
+      @register="handleRegister"
+    />
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import LoginModal from '@/components/Auth/LoginModal.vue'
 import exampleImg from '../../пример.png'
 import cardViewsSvg from '../../значок просмотры на карточке .svg'
 import cartIconSvg from '../../значок корзины на кнопке в корзину.svg'
+
+const isLoginModalOpen = ref(false)
+
+const openLoginModal = () => {
+  // Открываем модальное окно на всех устройствах
+  isLoginModalOpen.value = true
+}
+
+const closeLoginModal = () => {
+  isLoginModalOpen.value = false
+}
+
+const handleLogin = (credentials) => {
+  console.log('Login attempt:', credentials)
+  // TODO: Реализовать логику входа
+  closeLoginModal()
+}
+
+const handleRegister = (data) => {
+  console.log('Register attempt:', data)
+  // TODO: Реализовать логику регистрации
+  closeLoginModal()
+}
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/assets/styles/breakpoints' as *;
+
 .login-page {
   width: 100%;
   min-height: calc(100vh - 224px);
@@ -64,6 +100,9 @@ import cartIconSvg from '../../значок корзины на кнопке в 
 .login-message {
   text-align: center;
   margin: 80px 0 80px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .login-title {
@@ -101,12 +140,70 @@ import cartIconSvg from '../../значок корзины на кнопке в 
   color: #640000;
 }
 
+.login-button {
+  width: 230px;
+  height: 48px;
+  border-radius: 10px;
+  padding: 12px 24px;
+  background: #640000;
+  border: none;
+  cursor: pointer;
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: #F6F5EC;
+  opacity: 1;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+  box-sizing: border-box;
+}
+
+.login-button:hover {
+  background-color: #7a0000;
+  opacity: 0.9;
+}
+
 .recommended-section {
   width: 100%;
   max-width: 1300px;
   margin: 0 auto;
   padding: 40px 20px 180px 32px;
   box-sizing: border-box;
+}
+
+/* Мобильная версия страницы логина */
+@media (max-width: 1279px) {
+  .is-mobile-device .login-content {
+    padding: 16px;
+    padding-bottom: 182px; /* Отступ для нижней навигационной панели и action menu */
+  }
+
+  .is-mobile-device .login-message {
+    margin: 40px 0 40px 0;
+  }
+
+  .is-mobile-device .login-title {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .is-mobile-device .login-text {
+    font-size: 16px;
+  }
+
+  .is-mobile-device .login-button {
+    width: 100%;
+    max-width: 230px;
+    height: 48px;
+    font-size: 16px;
+    margin-top: 20px;
+  }
 }
 
 .recommended-title {
@@ -119,6 +216,7 @@ import cartIconSvg from '../../значок корзины на кнопке в 
   color: #1B1716;
   margin: 0 0 24px 0;
   padding: 0;
+  white-space: nowrap;
 }
 
 .recommended-products {
@@ -296,14 +394,53 @@ import cartIconSvg from '../../значок корзины на кнопке в 
   white-space: nowrap;
 }
 
-@media (max-width: 390px) {
+/* Десктопная версия - всегда показываем десктопные стили */
+@include desktop {
   .recommended-section {
-    width: 100%;
-    padding: 16px;
+    padding: 40px 20px 180px 32px;
+  }
+
+  .recommended-products {
+    grid-template-columns: repeat(5, 236px);
+    gap: 16px;
+    justify-content: center;
+  }
+}
+
+/* Для десктопных устройств всегда применяем десктопные стили даже при масштабировании */
+.is-desktop-device .recommended-section {
+  padding: 40px 20px 180px 32px !important;
+}
+
+.is-desktop-device .recommended-products {
+  grid-template-columns: repeat(5, 236px) !important;
+  gap: 16px !important;
+  justify-content: center !important;
+}
+
+.is-desktop-device .recommended-card {
+  width: 236px !important;
+}
+
+.is-desktop-device .card-image-wrapper {
+  height: 287px !important;
+}
+
+.is-desktop-device .card-add-to-cart-button {
+  width: 230px !important;
+  height: 35px !important;
+}
+
+/* Мобильная адаптация для секции "Рекомендуем" */
+@media (max-width: 1279px) {
+  .is-mobile-device .recommended-section {
+    margin-top: 60px;
+    margin-bottom: 40px;
+    padding: 0 16px;
     box-sizing: border-box;
   }
 
-  .recommended-title {
+  .is-mobile-device .recommended-title {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-style: normal;
@@ -311,55 +448,47 @@ import cartIconSvg from '../../значок корзины на кнопке в 
     line-height: 100%;
     letter-spacing: -0.01em;
     color: #1B1716;
-    margin: 0 0 16px 0;
+    width: auto;
+    height: auto;
+    margin: 0 0 24px 0;
     padding: 0;
+    white-space: nowrap;
   }
 
-  .recommended-products {
+  .is-mobile-device .recommended-products {
     display: grid;
-    grid-template-columns: repeat(2, 175px);
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
-    justify-content: center;
     width: 100%;
+    box-sizing: border-box;
   }
 
-  .recommended-card {
-    width: 175px;
+  .is-mobile-device .recommended-card {
+    width: 100%;
+    max-width: 175px;
+    margin: 0 auto;
     background: #F6F5EC;
     border-radius: 10px;
     overflow: hidden;
   }
 
-  .card-image-wrapper {
+  .is-mobile-device .card-image-wrapper {
     position: relative;
-    width: 175px;
+    width: 100%;
+    max-width: 175px;
     height: 231px;
-    overflow: visible;
+    overflow: hidden;
+    margin: 0 auto;
   }
 
-  .card-image-wrapper::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -3px;
-    width: calc(100% + 6px);
-    height: calc(100% + 10px);
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 7.68%, rgba(0, 0, 0, 0) 18.39%);
-    z-index: 1;
-    pointer-events: none;
-  }
-
-  .card-image {
-    width: calc(100% + 6px);
-    height: calc(100% + 10px);
-    position: absolute;
-    top: -5px;
-    left: -3px;
+  .is-mobile-device .card-image {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     display: block;
   }
 
-  .card-views {
+  .is-mobile-device .card-views {
     position: absolute;
     top: 8px;
     left: 8px;
@@ -369,7 +498,7 @@ import cartIconSvg from '../../значок корзины на кнопке в 
     z-index: 2;
   }
 
-  .card-views-count {
+  .is-mobile-device .card-views-count {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -379,7 +508,7 @@ import cartIconSvg from '../../значок корзины на кнопке в 
     color: #F6F5EC;
   }
 
-  .card-content {
+  .is-mobile-device .card-content {
     padding: 16px 0;
     display: flex;
     flex-direction: column;
@@ -389,7 +518,7 @@ import cartIconSvg from '../../значок корзины на кнопке в 
     box-sizing: border-box;
   }
 
-  .card-prices {
+  .is-mobile-device .card-prices {
     display: flex;
     align-items: baseline;
     gap: 8px;
@@ -397,7 +526,7 @@ import cartIconSvg from '../../значок корзины на кнопке в 
     padding-left: 0;
   }
 
-  .card-price-current {
+  .is-mobile-device .card-price-current {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-style: normal;
@@ -409,7 +538,7 @@ import cartIconSvg from '../../значок корзины на кнопке в 
     height: 19px;
   }
 
-  .card-price-old {
+  .is-mobile-device .card-price-old {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -422,7 +551,7 @@ import cartIconSvg from '../../значок корзины на кнопке в 
     height: auto;
   }
 
-  .card-price-label {
+  .is-mobile-device .card-price-label {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -435,7 +564,7 @@ import cartIconSvg from '../../значок корзины на кнопке в 
     padding-left: 0;
   }
 
-  .card-description {
+  .is-mobile-device .card-description {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -446,10 +575,12 @@ import cartIconSvg from '../../значок корзины на кнопке в 
     width: auto;
     height: auto;
     padding-left: 0;
+    text-align: left;
   }
 
-  .card-add-to-cart-button {
-    width: 175px;
+  .is-mobile-device .card-add-to-cart-button {
+    width: 100%;
+    max-width: 175px;
     height: 31px;
     border-radius: 10px;
     padding: 8px 24px;
@@ -464,13 +595,13 @@ import cartIconSvg from '../../значок корзины на кнопке в 
     align-self: center;
   }
 
-  .card-cart-icon {
+  .is-mobile-device .card-cart-icon {
     width: 12px;
     height: 12px;
     display: block;
   }
 
-  .card-cart-text {
+  .is-mobile-device .card-cart-text {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -478,6 +609,40 @@ import cartIconSvg from '../../значок корзины на кнопке в 
     line-height: 100%;
     letter-spacing: 0;
     color: #F6F5EC;
+    white-space: nowrap;
+  }
+}
+
+/* Адаптация для очень маленьких экранов (до 300px) */
+@media (max-width: 300px) {
+  .is-mobile-device .login-message {
+    margin: 30px 0 30px 0;
+  }
+
+  .is-mobile-device .login-title {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .is-mobile-device .login-text {
+    font-size: 14px;
+  }
+
+  .is-mobile-device .login-link {
+    font-size: 14px;
+  }
+
+  .is-mobile-device .recommended-section {
+    padding: 0 8px;
+  }
+
+  .is-mobile-device .recommended-products {
+    gap: 6px;
+  }
+
+  .is-mobile-device .recommended-title {
+    font-size: 14px;
+    margin-bottom: 20px;
     white-space: nowrap;
   }
 }

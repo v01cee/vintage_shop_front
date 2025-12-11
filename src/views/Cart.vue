@@ -763,8 +763,11 @@ const goToCheckout = () => {
 
 .recommended-section {
   width: 100%;
+  max-width: 100%;
   padding: 0px 20px 60px 30px;
   box-sizing: border-box;
+  overflow-x: hidden;
+  position: relative;
 }
 
 .recommended-title {
@@ -784,18 +787,25 @@ const goToCheckout = () => {
 
 .recommended-products {
   display: grid;
-  grid-template-columns: repeat(5, 236px);
+  grid-template-columns: repeat(5, minmax(0, 236px));
   gap: 16px;
   justify-content: center;
+  max-width: 100%;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 .recommended-card {
   width: 236px;
+  max-width: 100%;
   background: #F6F5EC;
   border-radius: 10px;
   overflow: hidden;
   opacity: 1;
   flex-shrink: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .card-image-wrapper {
@@ -853,10 +863,12 @@ const goToCheckout = () => {
 }
 
 .card-content {
-  padding: 16px 16px 16px 0;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .card-prices {
@@ -921,7 +933,8 @@ const goToCheckout = () => {
 }
 
 .card-add-to-cart-button {
-  width: 230px;
+  width: 100%;
+  max-width: 230px;
   height: 35px;
   border-radius: 10px;
   padding: 8px 24px;
@@ -956,14 +969,64 @@ const goToCheckout = () => {
   height: 19px;
 }
 
+/* Скрываем мобильную версию на десктопе */
+.mobile-cart {
+  display: none;
+}
+
+/* Показываем мобильную версию только на мобильных устройствах */
+@media (min-width: 551px) and (max-width: 1279px) {
+  .mobile-cart {
+    display: none !important;
+  }
+}
+
+/* Адаптация сетки рекомендаций для разных размеров экрана */
+@media (max-width: 1400px) {
+  .recommended-products {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+  }
+  
+  .recommended-card {
+    width: 100%;
+    max-width: 236px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .recommended-products {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Явно показываем десктопную версию на экранах от 1280px (даже при масштабировании) */
+@media (min-width: 1280px) {
+  .mobile-cart {
+    display: none !important;
+  }
+
+  .cart-header,
+  .table-headers-wrapper,
+  .cart-items,
+  .checkout-section,
+  .recommended-section {
+    display: flex;
+  }
+}
+
 /* Мобильная версия корзины */
-@media (max-width: 390px) {
+@media (max-width: 550px) {
   .cart-header,
   .table-headers-wrapper,
   .cart-items,
   .checkout-section,
   .recommended-section {
     display: none;
+  }
+
+  .mobile-cart {
+    display: block;
   }
 
   .cart-content {
@@ -973,18 +1036,22 @@ const goToCheckout = () => {
     padding-bottom: 131px; /* 67px (меню действий) + 64px (нижняя панель) */
     overflow: visible;
     margin-top: 0;
+    box-sizing: border-box;
   }
 
   .mobile-cart {
     padding: 16px;
-    padding-top: 0;
-    margin-top: 50px;
+    padding-top: 16px;
+    padding-bottom: 0;
+    margin-top: 0;
     overflow: visible;
+    box-sizing: border-box;
   }
 
   /* Заголовок с суммой */
   .mobile-cart-header {
     margin-bottom: 16px;
+    padding-top: 16px;
   }
 
   .mobile-cart-summary {
@@ -1364,8 +1431,9 @@ const goToCheckout = () => {
 
   /* Рекомендуем */
   .mobile-recommended-section {
-    width: 100%;
-    padding: 16px;
+    margin-top: 60px;
+    margin-bottom: 40px;
+    padding: 0 16px;
     box-sizing: border-box;
   }
 
@@ -1377,20 +1445,24 @@ const goToCheckout = () => {
     line-height: 100%;
     letter-spacing: -0.01em;
     color: #1B1716;
-    margin: 0 0 16px 0;
+    width: 109px;
+    height: 19px;
+    margin: 0 0 24px 0;
     padding: 0;
   }
 
   .mobile-recommended-products {
     display: grid;
-    grid-template-columns: repeat(2, 175px);
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
-    justify-content: center;
     width: 100%;
+    box-sizing: border-box;
   }
 
   .mobile-recommended-card {
-    width: 175px;
+    width: 100%;
+    max-width: 175px;
+    margin: 0 auto;
     background: #F6F5EC;
     border-radius: 10px;
     overflow: hidden;
@@ -1398,7 +1470,7 @@ const goToCheckout = () => {
 
   .mobile-card-image-wrapper {
     position: relative;
-    width: 175px;
+    width: 100%;
     height: 231px;
     overflow: visible;
   }
@@ -1515,7 +1587,8 @@ const goToCheckout = () => {
   }
 
   .mobile-card-add-to-cart-button {
-    width: 175px;
+    width: 100%;
+    max-width: 175px;
     height: 31px;
     border-radius: 10px;
     padding: 8px 24px;
@@ -1554,7 +1627,6 @@ const goToCheckout = () => {
     left: 0;
     right: 0;
     width: 100%;
-    max-width: 390px;
     height: 67px;
     padding: 16px;
     gap: 8px;
@@ -1572,7 +1644,7 @@ const goToCheckout = () => {
 
   .mobile-checkout-button {
     width: 100%;
-    max-width: 358px;
+    max-width: 100%;
     height: 35px;
     border-radius: 10px;
     padding: 8px 24px;
@@ -1596,6 +1668,149 @@ const goToCheckout = () => {
     width: 187px;
     height: 19px;
     white-space: nowrap;
+  }
+
+  /* Адаптация для очень маленьких экранов (до 300px) */
+  @media (max-width: 300px) {
+    .mobile-cart {
+      padding: 8px;
+      padding-top: 8px;
+    }
+
+    .mobile-cart-header {
+      margin-bottom: 12px;
+      padding-top: 8px;
+    }
+
+    .mobile-summary-label,
+    .mobile-summary-value {
+      font-size: 18px;
+    }
+
+    .mobile-items-count,
+    .mobile-items-unavailable {
+      font-size: 14px;
+    }
+
+    .mobile-cart-items {
+      gap: 12px;
+    }
+
+    .mobile-cart-item {
+      gap: 12px;
+    }
+
+    .mobile-item-image-placeholder,
+    .mobile-item-image-wrapper {
+      width: 100px;
+      height: 100px;
+    }
+
+    .mobile-item-title {
+      font-size: 12px;
+      width: auto;
+      height: auto;
+    }
+
+    .mobile-price-label {
+      font-size: 14px;
+    }
+
+    .mobile-item-price {
+      font-size: 18px;
+    }
+
+    .mobile-article-label,
+    .mobile-item-article {
+      font-size: 12px;
+    }
+
+    .mobile-item-quantity {
+      width: 100px;
+      height: 28px;
+    }
+
+    .mobile-quantity-value {
+      font-size: 18px;
+    }
+
+    .mobile-checkout-warning {
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    .mobile-warning-bold {
+      font-size: 14px;
+    }
+
+    .mobile-recommended-section {
+      margin-top: 40px;
+      margin-bottom: 30px;
+      padding: 0 8px;
+    }
+
+    .mobile-recommended-title {
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .mobile-recommended-products {
+      gap: 6px;
+    }
+
+    .mobile-recommended-card {
+      max-width: 140px;
+    }
+
+    .mobile-card-image-wrapper {
+      max-width: 140px;
+      height: 180px;
+    }
+
+    .mobile-card-content {
+      padding: 12px 0;
+    }
+
+    .mobile-card-price-current {
+      font-size: 14px;
+    }
+
+    .mobile-card-price-old {
+      font-size: 10px;
+    }
+
+    .mobile-card-price-label {
+      font-size: 9px;
+    }
+
+    .mobile-card-description {
+      font-size: 10px;
+    }
+
+    .mobile-card-add-to-cart-button {
+      max-width: 140px;
+      height: 28px;
+      padding: 6px 16px;
+    }
+
+    .mobile-card-cart-text {
+      font-size: 11px;
+    }
+
+    .mobile-cart-actions-menu {
+      padding: 12px 8px;
+      height: 60px;
+    }
+
+    .mobile-checkout-button {
+      height: 32px;
+      padding: 6px 16px;
+    }
+
+    .mobile-checkout-text {
+      font-size: 14px;
+      width: auto;
+    }
   }
 }
 </style>

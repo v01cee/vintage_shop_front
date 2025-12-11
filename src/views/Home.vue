@@ -13,6 +13,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import ProductCard from '@/components/Product/ProductCard.vue'
+import { isMobileDevice } from '@/utils/deviceDetector'
 
 // Временные данные для верстки - потом заменим на реальные
 // Для десктопа: 10 товаров для сетки 5x2
@@ -30,11 +31,14 @@ const products = ref([
   { id: 10, name: 'Товар 10', price: 10000, image: '' }
 ])
 
-const isMobile = ref(typeof window !== 'undefined' ? window.innerWidth <= 390 : false)
+// Проверяем тип устройства (компьютер или телефон)
+const isMobile = ref(typeof window !== 'undefined' ? isMobileDevice() : false)
 
 const updateIsMobile = () => {
   if (typeof window !== 'undefined') {
-    isMobile.value = window.innerWidth <= 390
+    // Проверяем тип устройства, а не размер экрана
+    // Это предотвращает срабатывание мобильных стилей при масштабировании на десктопе
+    isMobile.value = isMobileDevice()
   }
 }
 
@@ -53,7 +57,10 @@ onUnmounted(() => {
 
 const displayedProducts = computed(() => {
   // На десктопе показываем все 10 товаров, на мобильных только 4
-  return isMobile.value ? products.value.slice(0, 4) : products.value
+  // Проверяем класс на documentElement для точности
+  const isMobileDevice = typeof window !== 'undefined' && 
+    document.documentElement.classList.contains('is-mobile-device')
+  return isMobileDevice ? products.value.slice(0, 4) : products.value
 })
 </script>
 
@@ -62,40 +69,108 @@ const displayedProducts = computed(() => {
   width: 100%;
   height: 100%;
   padding: 0;
-  overflow: auto;
+  padding-top: 0;
+  margin-top: 0;
+  overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
+  overflow-y: auto; /* Вертикальная прокрутка разрешена */
   background-color: #F6F5EC;
+}
+
+/* Для десктопа добавляем отступ сверху для страницы каталога, чтобы товары не перекрывали фильтры */
+.is-desktop-device .catalog-page {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+  position: relative !important;
 }
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(5, 236px);
-  gap: 16px;
-  justify-content: center;
+  /* Фиксируем 5 колонок для десктопа (5x2 для 10 товаров) */
+  grid-template-columns: repeat(5, 1fr);
+  gap: clamp(16px, 1.5vw, 24px);
   width: 100%;
-  padding: 20px 32px;
+  max-width: 100%;
+  padding: clamp(20px, 2vh, 32px) clamp(32px, 3vw, 40px);
   box-sizing: border-box;
+  justify-items: start; /* Выравниваем карточки по левому краю */
+  margin-top: 0; /* Убираем лишние отступы */
 }
 
-/* Адаптация для мобильных */
-@media (max-width: 390px) {
-  .catalog-page {
+/* Адаптация для планшетов и мобильных (до 768px, но не включая маленькие мобильные) */
+/* Но только для мобильных устройств */
+@media (min-width: 401px) and (max-width: 767px) {
+  .is-mobile-device .catalog-page {
+    overflow-x: hidden; /* Запрещаем горизонтальную прокрутку */
+  }
+
+  .is-mobile-device .products-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 колонки для планшетов и больших мобильных */
+    gap: clamp(12px, 2vw, 16px);
+    padding: clamp(16px, 2vh, 24px) clamp(20px, 3vw, 32px);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* Стили для десктопа (от 1280px) */
+@media (min-width: 1280px) {
+  .products-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: clamp(16px, 1.5vw, 24px);
+    padding: clamp(20px, 2vh, 32px) clamp(32px, 3vw, 40px);
+    padding-top: 60px; /* Увеличенный отступ сверху, чтобы не перекрывать фильтры в хедере (хедер 208px, фильтры на 137px) */
+    justify-items: start; /* Выравниваем карточки по левому краю */
+  }
+
+  .product-card {
+    max-width: 236px; /* Фиксируем максимальную ширину карточки */
+    width: 100%;
+  }
+}
+
+/* Для десктопных устройств всегда применяем десктопные стили даже при масштабировании */
+.is-desktop-device .products-grid {
+  grid-template-columns: repeat(5, 1fr) !important;
+  gap: clamp(16px, 1.5vw, 24px) !important;
+  padding-left: clamp(32px, 3vw, 40px) !important;
+  padding-right: clamp(32px, 3vw, 40px) !important;
+  padding-bottom: clamp(20px, 2vh, 32px) !important;
+  padding-top: 60px !important; /* Увеличенный отступ сверху, чтобы не перекрывать фильтры в хедере */
+  margin-top: 0 !important;
+  justify-items: start !important;
+}
+
+.is-desktop-device .product-card {
+  max-width: 236px !important;
+  width: 100% !important;
+}
+
+
+/* Адаптация для планшетов (от 768px до 1279px), но только для мобильных устройств */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .is-mobile-device .products-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 колонки для планшетов */
+    gap: clamp(16px, 2vw, 24px);
+    padding: clamp(20px, 2vh, 28px) clamp(24px, 3vw, 36px);
+    justify-items: start; /* Выравниваем карточки по левому краю */
+  }
+}
+
+/* Адаптация для мобильных (до 400px - iPhone 12 и меньше) */
+@media (max-width: 400px) {
+  .is-mobile-device .catalog-page {
     padding-bottom: 0;
     overflow-x: hidden;
     width: 100%;
     max-width: 100%;
   }
 
-  .products-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 175px);
+  .is-mobile-device .products-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 колонки с равной шириной */
     gap: 8px;
-    justify-content: center;
     padding: 16px;
     padding-top: 10px;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    overflow-x: hidden;
   }
 }
 </style>

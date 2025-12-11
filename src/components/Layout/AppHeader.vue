@@ -84,7 +84,7 @@
           </button>
         </div>
       </div>
-      <button v-if="!isMenuOpen" class="filter-button" type="button" aria-label="Фильтры" @click="toggleFilterModal">
+      <button class="filter-button" type="button" aria-label="Фильтры" @click="toggleFilterModal">
         <img 
           :src="filterIcon" 
           alt="Фильтры" 
@@ -135,7 +135,7 @@
         <div class="nav-divider"></div>
         <div class="nav-column">
           <a href="#" class="nav-link" @click.prevent="handleContacts">Контакты</a>
-          <router-link to="/about-owner" class="nav-link" @click="closeMenuOnNavigate">О владельце</router-link>
+          <router-link to="/about-owner" class="nav-link" @click="closeMenuOnNavigate">О сайте</router-link>
         </div>
         <div class="nav-divider"></div>
         <div class="nav-column">
@@ -153,11 +153,11 @@
           <nav class="mobile-menu-nav">
             <router-link to="/" class="mobile-menu-item" @click="toggleMenu">Каталог</router-link>
             <router-link to="/reviews" class="mobile-menu-item" :class="{ active: route.name === 'Reviews' }" @click="toggleMenu">Отзывы</router-link>
-            <router-link to="/reviews" class="mobile-menu-item" :class="{ active: route.name === 'Cart' || route.name === 'Reviews' }" @click="toggleMenu">Корзина</router-link>
+            <router-link to="/cart" class="mobile-menu-item" :class="{ active: route.name === 'Cart' }" @click="toggleMenu">Корзина</router-link>
             <router-link to="/orders" class="mobile-menu-item" @click="toggleMenu">Ваши заказы</router-link>
             <router-link to="/login" class="mobile-menu-item" @click="toggleMenu">Ваш профиль</router-link>
             <a href="#" class="mobile-menu-item" @click="toggleMenu">Контакты</a>
-            <router-link to="/about-owner" class="mobile-menu-item" @click="toggleMenu">О владельце</router-link>
+            <router-link to="/about-owner" class="mobile-menu-item" @click="toggleMenu">О сайте</router-link>
             <router-link to="/terms" class="mobile-menu-item" @click="toggleMenu">Условия</router-link>
             <a href="#" class="mobile-menu-item" @click="toggleMenu">Офферта</a>
           </nav>
@@ -194,9 +194,14 @@
       
       <!-- Категории для мобильных -->
       <div v-if="route.name !== 'Cart' && route.name !== 'Orders'" class="mobile-category">
-        <div class="mobile-category-icon">
+        <button 
+          type="button"
+          class="mobile-category-icon" 
+          @click="toggleFilterModal"
+          aria-label="Фильтры"
+        >
           <img :src="filterIcon" alt="Фильтры" class="category-icon-img" />
-        </div>
+        </button>
         <div class="mobile-categories-scroll">
           <span class="mobile-category-item">Винтажная папфюмерия и косметика</span>
           <span class="mobile-category-item">Аксессуары</span>
@@ -208,9 +213,10 @@
         </div>
       </div>
     </div>
+  </header>
     
-    <!-- Нижняя навигационная панель для мобильных -->
-    <nav class="mobile-bottom-nav">
+  <!-- Нижняя навигационная панель для мобильных -->
+  <nav class="mobile-bottom-nav">
       <button 
         class="bottom-nav-item" 
         :class="{ active: route.name === 'Home' }"
@@ -272,14 +278,23 @@
         <span class="bottom-nav-text">Войти</span>
       </button>
     </nav>
-  </header>
+
+    <!-- Модальное окно входа/регистрации -->
+    <!-- TODO: Переместить в другое место по указанию пользователя -->
+    <!-- <LoginModal 
+      :is-open="isLoginModalOpen" 
+      @close="closeLoginModal"
+      @login="handleLogin"
+      @register="handleRegister"
+    /> -->
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useProductsStore } from '@/stores/products'
 import { useCartStore } from '@/stores/cart'
+// import LoginModal from '@/components/Auth/LoginModal.vue'
 import logoImage from '../../../лого главный экран.svg'
 import menuIcon from '../../../меню.svg'
 import menuOpenIcon from '../../../открытое меню.svg'
@@ -305,9 +320,14 @@ const cartStore = useCartStore()
 const searchQuery = ref('')
 const isFilterModalOpen = ref(false)
 const isMenuOpen = ref(false)
+// const isLoginModalOpen = ref(false) // TODO: Использовать в другом месте
 const selectedFilter = computed({
   get: () => productsStore.selectedFilter,
-  set: (value) => productsStore.setFilter(value)
+  set: (value) => {
+    productsStore.setFilter(value)
+    // Закрываем модальное окно после выбора фильтра
+    closeFilterModal()
+  }
 })
 
 const currentMenuIcon = computed(() => {
@@ -380,6 +400,23 @@ const goToLogin = () => {
   isMenuOpen.value = false
 }
 
+// TODO: Переместить логику модального окна в другое место по указанию пользователя
+// const closeLoginModal = () => {
+//   isLoginModalOpen.value = false
+// }
+
+// const handleLogin = (credentials) => {
+//   console.log('Login attempt:', credentials)
+//   // TODO: Реализовать логику входа
+//   closeLoginModal()
+// }
+
+// const handleRegister = (data) => {
+//   console.log('Register attempt:', data)
+//   // TODO: Реализовать логику регистрации
+//   closeLoginModal()
+// }
+
 const closeMenuOnNavigate = () => {
   isMenuOpen.value = false
 }
@@ -403,10 +440,28 @@ onMounted(() => {
   cartStore.fetchCart()
 })
 
+// Добавляем/убираем класс на body при открытии/закрытии меню для плавного сдвига контента
+watch(isMenuOpen, (newValue) => {
+  if (typeof document !== 'undefined') {
+    if (newValue) {
+      document.body.classList.add('menu-open')
+    } else {
+      document.body.classList.remove('menu-open')
+    }
+  }
+})
+
+onUnmounted(() => {
+  if (typeof document !== 'undefined') {
+    document.body.classList.remove('menu-open')
+  }
+})
+
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/assets/styles/breakpoints' as *;
 .app-header {
   width: 100%;
   height: 208px;
@@ -438,6 +493,7 @@ onMounted(() => {
   justify-content: flex-start;
   cursor: pointer;
   transition: opacity 0.2s;
+  z-index: 10; /* Гарантируем, что логотип поверх других элементов */
 }
 
 .logo-wrapper:hover {
@@ -447,6 +503,8 @@ onMounted(() => {
 .logo-image {
   width: 100%;
   height: 100%;
+  max-width: 198px;
+  max-height: 64px;
   object-fit: contain;
   display: block;
   image-rendering: -webkit-optimize-contrast;
@@ -457,6 +515,8 @@ onMounted(() => {
   backface-visibility: hidden;
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
+  position: relative;
+  z-index: 1;
   will-change: transform;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -823,6 +883,7 @@ onMounted(() => {
   justify-content: center;
   gap: 0;
   background: #F6F5EC;
+  z-index: 100;
 }
 
 .nav-column {
@@ -1023,72 +1084,278 @@ onMounted(() => {
   object-fit: contain;
 }
 
-/* Мобильная адаптация для экранов 390px */
-@media (max-width: 390px) {
-  .app-header {
+/* Нижняя навигационная панель - скрыта по умолчанию, показывается на мобильных */
+.mobile-bottom-nav {
+  display: none;
+}
+
+/* Скрываем мобильные элементы на десктопе */
+@include desktop {
+  .mobile-bottom-nav,
+  .mobile-ad-banner,
+  .mobile-search-wrapper,
+  .mobile-category,
+  .mobile-menu-overlay {
+    display: none;
+  }
+}
+
+/* Также скрываем мобильные элементы на десктопных устройствах даже при масштабировании */
+.is-desktop-device .mobile-bottom-nav,
+.is-desktop-device .mobile-ad-banner,
+.is-desktop-device .mobile-search-wrapper,
+.is-desktop-device .mobile-category,
+.is-desktop-device .mobile-menu-overlay {
+  display: none !important;
+}
+
+/* Восстанавливаем десктопные стили хедера на десктопных устройствах даже при масштабировании */
+.is-desktop-device .app-header {
+  height: 208px !important; /* Полная высота хедера с фильтрами */
+  position: relative !important;
+}
+
+.is-desktop-device .header-container {
+  max-width: 1300px !important;
+  width: 100% !important;
+}
+
+.is-desktop-device .logo-wrapper {
+  position: absolute !important;
+  left: 40px !important;
+  top: 0 !important;
+  width: 198px !important;
+  height: 64px !important;
+  z-index: 10 !important;
+}
+
+/* Гарантируем, что фильтры и категории всегда видны на десктопе */
+.is-desktop-device .filter-button {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.is-desktop-device .categories-wrapper {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.is-desktop-device .logo-image {
+  max-width: 198px !important;
+  max-height: 64px !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.is-desktop-device .menu-button {
+  position: absolute !important;
+  left: 255px !important;
+  top: 5px !important;
+  width: 54px !important;
+  height: 54px !important;
+  display: flex !important;
+}
+
+.is-desktop-device .search-wrapper {
+  position: absolute !important;
+  left: 335px !important;
+  top: 5.5px !important;
+  width: 691px !important;
+  height: 55px !important;
+  display: flex !important;
+}
+
+.is-desktop-device .search-clear-button {
+  position: absolute !important;
+  left: 309px !important;
+  top: 14.5px !important;
+  display: flex !important;
+}
+
+.is-desktop-device .orders-button {
+  position: absolute !important;
+  left: 1117px !important;
+  top: 5.5px !important;
+  width: 56px !important;
+  height: 53px !important;
+  display: flex !important;
+}
+
+.is-desktop-device .cart-button {
+  position: absolute !important;
+  left: 1193px !important;
+  top: 5.5px !important;
+  width: 64px !important;
+  height: 53px !important;
+  display: flex !important;
+}
+
+.is-desktop-device .filter-button {
+  position: absolute !important;
+  left: 33px !important;
+  top: 137px !important;
+  display: flex !important;
+}
+
+.is-desktop-device .categories-wrapper {
+  position: absolute !important;
+  left: 73px !important;
+  top: 137px !important;
+  display: flex !important;
+}
+
+.is-desktop-device .menu-navigation {
+  position: absolute !important;
+  left: 50% !important;
+  top: 137px !important;
+  transform: translateX(-50%) !important;
+  display: flex !important;
+  z-index: 100 !important;
+}
+
+.is-desktop-device .login-button {
+  position: absolute !important;
+  left: 1050px !important;
+  top: 5.5px !important;
+  width: 47px !important;
+  height: 53px !important;
+  padding: 0 !important;
+  gap: 2px !important;
+  background: transparent !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.is-desktop-device .login-icon {
+  display: block !important;
+}
+
+.is-desktop-device .info-banner {
+  position: absolute !important;
+  left: 32px !important;
+  top: 80px !important;
+  width: 1216px !important;
+  max-width: 1216px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 24px !important;
+}
+
+/* Дополнительные стили для очень маленьких экранов (до 400px) */
+@include mobile {
+  /* Можно добавить специфичные стили для очень маленьких экранов, если нужно */
+}
+
+/* Мобильная и планшетная адаптация (до 1279px), но только для мобильных устройств */
+@include tablet-down {
+  .is-mobile-device .app-header {
     height: 310px;
     position: relative;
     background-color: #F6F5EC;
-    /* Убираем z-index: 0, чтобы не создавать stacking context, который ограничивает z-index дочерних элементов */
   }
 
   /* Уменьшаем высоту хедера на странице корзины */
-  .app-header.cart-page {
-    height: 75px; /* Лого (24px + 40px) + баннер (72px + 28px) */
+  .is-mobile-device .app-header.cart-page {
+    height: 75px;
   }
 
   /* Уменьшаем высоту хедера на странице заказов */
-  .app-header.orders-page {
-    height: 100px; /* Лого + баннер */
+  .is-mobile-device .app-header.orders-page {
+    height: 100px;
   }
 
   /* Высота хедера на странице товара */
-  .app-header.product-page {
-    height: 200px; /* Лого + красный баннер + поиск + категории */
+  .is-mobile-device .app-header.product-page {
+    height: 200px;
   }
 
-  .header-container {
+  .is-mobile-device .header-container {
     max-width: 100%;
     width: 100%;
   }
 
   /* Логотип */
-  .logo-wrapper {
+  .is-mobile-device .logo-wrapper {
     position: absolute;
     left: 16px;
     top: 24px;
     width: 123.75px;
     height: 40px;
+    z-index: 10;
   }
 
-  /* Скрываем элементы, которые не нужны на мобильных */
-  .menu-button,
-  .search-wrapper,
-  .search-clear-button,
-  .orders-button,
-  .cart-button,
-  .filter-button,
-  .categories-wrapper,
-  .menu-navigation {
+  .is-mobile-device .logo-image {
+    max-width: 123.75px !important;
+    max-height: 40px !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* Скрываем десктопные элементы только на мобильных */
+  .is-mobile-device .menu-button,
+  .is-mobile-device .search-wrapper,
+  .is-mobile-device .search-clear-button,
+  .is-mobile-device .orders-button,
+  .is-mobile-device .cart-button,
+  .is-mobile-device .filter-button,
+  .is-mobile-device .categories-wrapper,
+  .is-mobile-device .menu-navigation,
+  .is-mobile-device .info-banner-contacts {
     display: none;
   }
 
-  /* Кнопка "Профиль" */
+
+  /* Модальное окно фильтров на мобильных устройствах */
+  .is-mobile-device .filter-modal-overlay {
+    padding-top: 140px;
+    padding-left: 16px;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .is-mobile-device .filter-modal {
+    width: calc(100vw - 32px);
+    max-width: 299px;
+    padding: 24px 16px;
+  }
+
+  /* На десктопных устройствах всегда показываем фильтры и категории (но не меню, оно показывается только при isMenuOpen) */
+  .is-desktop-device .filter-button,
+  .is-desktop-device .categories-wrapper {
+    display: flex !important;
+  }
+
+  /* Меню показывается только когда оно открыто (v-if="isMenuOpen") */
+  .is-desktop-device .menu-navigation {
+    display: flex !important;
+  }
+
+  /* Кнопка "Профиль" - переопределяем десктопные стили */
   .login-button {
-    position: absolute;
-    left: 266px;
-    top: 30px;
-    width: 108px;
-    height: 28px;
-    border-radius: 10px;
-    padding: 8px 32px;
-    gap: 10px;
-    background: #1B1716CC;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
+    position: absolute !important;
+    right: 16px !important;
+    left: auto !important;
+    top: 30px !important;
+    width: auto !important;
+    min-width: 70px !important;
+    max-width: 100px !important;
+    height: 28px !important;
+    border-radius: 10px !important;
+    padding: 8px 10px !important;
+    gap: 4px !important;
+    background: #1B1716CC !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    z-index: 100 !important;
   }
 
   .login-icon {
@@ -1103,8 +1370,7 @@ onMounted(() => {
     line-height: 100%;
     letter-spacing: 0%;
     color: #F6F5EC;
-    width: 44px;
-    height: 12px;
+    white-space: nowrap;
   }
 
   /* Информационный баннер */
@@ -1112,7 +1378,8 @@ onMounted(() => {
     position: absolute;
     left: 16px;
     top: 72px;
-    width: 358px;
+    width: calc(100% - 32px);
+    max-width: 100%;
     height: 28px;
     border-radius: 10px;
     padding: 8px 16px;
@@ -1121,6 +1388,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
   }
 
   .info-banner-text {
@@ -1136,24 +1404,28 @@ onMounted(() => {
     white-space: nowrap;
   }
 
-  .info-banner-contacts {
-    display: none;
-  }
-
   /* Рекламный баннер для мобильных */
   .mobile-ad-banner {
     position: absolute;
     left: 16px;
     top: 108px;
-    width: 358px;
-    height: auto;
+    width: calc(100% - 32px);
+    max-width: 100%;
+    height: 108px; /* Фиксированная высота для одинакового отображения */
     display: block;
+    box-sizing: border-box;
+    margin-bottom: 0;
+    overflow: hidden; /* Обрезаем лишнее */
+    border-radius: 10px; /* Скругление углов */
   }
 
   .ad-banner-image {
     width: 100%;
-    height: auto;
+    height: 100%; /* Заполняем всю высоту контейнера */
     display: block;
+    object-fit: cover; /* Заполняем контейнер, сохраняя пропорции */
+    object-position: center;
+    border-radius: 10px; /* Скругление углов для изображения */
   }
 
   /* Поисковая строка для мобильных */
@@ -1161,7 +1433,8 @@ onMounted(() => {
     position: absolute;
     left: 16px;
     top: 108px;
-    width: 358px;
+    width: calc(100% - 32px);
+    max-width: 100%;
     height: 35px;
     border-radius: 10px;
     padding: 8px 16px;
@@ -1175,7 +1448,7 @@ onMounted(() => {
 
   /* Позиция поиска на главной странице (когда есть рекламный баннер) */
   .app-header:has(.mobile-ad-banner) .mobile-search-wrapper {
-    top: 216px;
+    top: 224px; /* 108px (top баннера) + 108px (высота баннера) + 8px (отступ) */
   }
 
   .mobile-search-input {
@@ -1205,12 +1478,13 @@ onMounted(() => {
     border: none;
     background: none;
     padding: 0;
-    margin: 0;
+    margin: 0 0 0 8px; /* Отступ слева от кнопки до инпута */
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    flex-shrink: 0; /* Предотвращаем сжатие кнопки */
+    min-width: 20px; /* Минимальная ширина кнопки */
   }
 
   .mobile-search-icon {
@@ -1218,6 +1492,27 @@ onMounted(() => {
     height: 100%;
     display: block;
     object-fit: contain;
+  }
+
+  /* Исправление для очень маленьких экранов (< 300px) */
+  @media (max-width: 299px) {
+    .mobile-search-wrapper {
+      left: 8px;
+      width: calc(100% - 16px);
+      padding: 6px 8px;
+    }
+
+    .mobile-search-input {
+      font-size: 14px;
+      min-width: 0; /* Позволяем инпуту сжиматься */
+    }
+
+    .mobile-search-button {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      margin-left: 4px;
+    }
   }
 
   /* Категории для мобильных */
@@ -1229,12 +1524,13 @@ onMounted(() => {
     align-items: center;
     gap: 10px;
     width: calc(100% - 32px);
-    max-width: 358px;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   /* Позиция категорий на главной странице (когда есть рекламный баннер) */
   .app-header:has(.mobile-ad-banner) .mobile-category {
-    top: 259px;
+    top: 267px; /* 108px (top баннера) + 108px (высота баннера) + 35px (высота поиска) + 8px (отступ) + 8px (дополнительный отступ) */
   }
 
   .mobile-category-icon {
@@ -1246,6 +1542,10 @@ onMounted(() => {
     justify-content: center;
     box-sizing: border-box;
     flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
   }
 
   .category-icon-img {
@@ -1292,23 +1592,23 @@ onMounted(() => {
 
   /* Нижняя навигационная панель */
   .mobile-bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    max-width: 390px;
-    height: 64px;
-    background: #F6F5EC;
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 64px !important;
+    background: #F6F5EC !important;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
-    display: flex;
     align-items: center;
     justify-content: space-around;
     padding: 8px 0;
-    z-index: 99999 !important; /* Очень высокий z-index с !important, чтобы панель всегда была поверх всего контента */
+    z-index: 99999 !important;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    isolation: isolate; /* Создаем новый stacking context для панели */
+    isolation: isolate;
   }
 
   .bottom-nav-item {
@@ -1378,7 +1678,7 @@ onMounted(() => {
     top: 0;
     left: 0;
     right: 0;
-    bottom: 64px; /* Оставляем место для нижней панели */
+    bottom: 64px;
     background: rgba(0, 0, 0, 0.5);
     z-index: 2000;
     display: flex;
@@ -1400,7 +1700,7 @@ onMounted(() => {
   .mobile-menu {
     position: relative;
     width: 100%;
-    max-width: 390px;
+    max-width: 100%;
     height: 100%;
     background: #F6F5EC;
     border: 2px solid #1B1716;
@@ -1481,7 +1781,7 @@ onMounted(() => {
 }
 
 /* Скрываем мобильные элементы на десктопе */
-@media (min-width: 391px) {
+@include desktop {
   .mobile-ad-banner,
   .mobile-search-wrapper,
   .mobile-category,
@@ -1489,6 +1789,20 @@ onMounted(() => {
   .mobile-menu-overlay {
     display: none;
   }
+}
+
+/* Также скрываем мобильные элементы на десктопных устройствах (даже при масштабировании) */
+.is-desktop-device .mobile-ad-banner,
+.is-desktop-device .mobile-search-wrapper,
+.is-desktop-device .mobile-category,
+.is-desktop-device .mobile-bottom-nav,
+.is-desktop-device .mobile-menu-overlay {
+  display: none !important;
+}
+
+/* Планшетная адаптация */
+@include tablet {
+  // Планшетные стили при необходимости
 }
 
 </style>

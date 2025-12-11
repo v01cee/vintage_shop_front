@@ -6,7 +6,7 @@
       </div>
       <div class="footer-links">
         <a href="#" class="footer-link">Контакты</a>
-        <router-link to="/about-owner" class="footer-link">О владельце</router-link>
+        <router-link to="/about-owner" class="footer-link">О сайте</router-link>
         <router-link to="/terms" class="footer-link">Условия</router-link>
         <a href="#" class="footer-link">Офферта</a>
       </div>
@@ -30,8 +30,8 @@ import logoSvg from '../../../лого на футер.svg'
   min-height: 224px;
 }
 
-/* Скрываем футер на мобильных */
-@media (max-width: 390px) {
+/* Скрываем футер на мобильных и планшетах (до 1279px) */
+@media (max-width: 1279px) {
   .app-footer {
     display: none;
   }

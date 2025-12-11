@@ -49,7 +49,8 @@
 // Страница "Условия"
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/assets/styles/breakpoints' as *;
 .terms-page {
   width: 100%;
   min-height: calc(100vh - 224px);
@@ -102,25 +103,32 @@
   flex-shrink: 0;
 }
 
+/* Скрываем мобильную версию на десктопе */
 .mobile-terms-content {
   display: none;
 }
 
-@media (max-width: 390px) {
-  .desktop-terms-content {
+/* Показываем десктопную версию на десктопе */
+.desktop-terms-content {
+  display: block;
+}
+
+/* Мобильная версия - показываем только на мобильных устройствах */
+@media (max-width: 1279px) {
+  .is-mobile-device .desktop-terms-content {
     display: none;
   }
 
-  .mobile-terms-content {
+  .is-mobile-device .mobile-terms-content {
     display: block;
     width: 100%;
     padding: 16px;
-    padding-top: 50px;
-    padding-bottom: 80px;
+    padding-top: 20px;
+    padding-bottom: 80px; /* Отступ для нижней навигационной панели */
     box-sizing: border-box;
   }
 
-  .mobile-terms-title {
+  .is-mobile-device .mobile-terms-title {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -133,7 +141,7 @@
     margin-bottom: 16px;
   }
 
-  .mobile-terms-text {
+  .is-mobile-device .mobile-terms-text {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -146,18 +154,63 @@
     margin-bottom: 16px;
   }
 
-  .mobile-terms-images {
+  .is-mobile-device .mobile-terms-images {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     margin-bottom: 16px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  .mobile-terms-image-placeholder {
-    width: 175px;
+  .is-mobile-device .mobile-terms-image-placeholder {
+    width: 100%;
     height: 88px;
     border-radius: 10px;
     background: #8A8A8A;
+  }
+}
+
+/* Десктопная версия - всегда показываем десктопную версию на десктопных устройствах */
+@include desktop {
+  .desktop-terms-content {
+    display: block;
+  }
+
+  .mobile-terms-content {
+    display: none;
+  }
+}
+
+/* Для десктопных устройств всегда применяем десктопные стили даже при масштабировании */
+.is-desktop-device .desktop-terms-content {
+  display: block !important;
+}
+
+.is-desktop-device .mobile-terms-content {
+  display: none !important;
+}
+
+/* Адаптация для очень маленьких экранов (до 300px) */
+@media (max-width: 300px) {
+  .is-mobile-device .mobile-terms-content {
+    padding: 0 8px 80px 8px;
+  }
+
+  .is-mobile-device .mobile-terms-title {
+    font-size: 18px;
+  }
+
+  .is-mobile-device .mobile-terms-text {
+    font-size: 14px;
+  }
+
+  .is-mobile-device .mobile-terms-images {
+    gap: 6px;
+  }
+
+  .is-mobile-device .mobile-terms-image-placeholder {
+    height: 70px;
   }
 }
 </style>

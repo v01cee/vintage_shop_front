@@ -228,10 +228,50 @@
         <div class="mobile-order-filter-item" @click="toggleDateFilter">
           <span class="mobile-order-filter-text">Дата</span>
           <img :src="arrowIcon" alt="" class="mobile-order-filter-arrow" :class="{ 'arrow-rotated': isDateFilterOpen }" />
+          <div v-if="isDateFilterOpen" class="mobile-filter-dropdown mobile-date-filter-dropdown">
+            <div class="mobile-filter-option" @click.stop="selectDateFilter('new')">
+              <img :src="dateFilter === 'new' ? activeRadioIcon : inactiveRadioIcon" alt="" class="mobile-radio-icon" />
+              <span :class="{ 'mobile-filter-option-active': dateFilter === 'new' }">Сначала новые</span>
+            </div>
+            <div class="mobile-filter-option" @click.stop="selectDateFilter('old')">
+              <img :src="dateFilter === 'old' ? activeRadioIcon : inactiveRadioIcon" alt="" class="mobile-radio-icon" />
+              <span :class="{ 'mobile-filter-option-active': dateFilter === 'old' }">Сначала старые</span>
+            </div>
+          </div>
         </div>
         <div class="mobile-order-filter-item" @click="toggleStatusFilter">
           <span class="mobile-order-filter-text">Статус</span>
           <img :src="arrowIcon" alt="" class="mobile-order-filter-arrow" :class="{ 'arrow-rotated': isStatusFilterOpen }" />
+          <div v-if="isStatusFilterOpen" class="mobile-filter-dropdown mobile-status-filter-dropdown">
+            <div class="mobile-filter-option" @click.stop="selectStatusFilter('all')">
+              <img :src="statusFilter === 'all' ? activeRadioIcon : inactiveRadioIcon" alt="" class="mobile-radio-icon" />
+              <span :class="{ 'mobile-filter-option-active': statusFilter === 'all' }">Все</span>
+            </div>
+            <div class="mobile-filter-option" @click.stop="selectStatusFilter('new')">
+              <img :src="statusFilter === 'new' ? activeRadioIcon : inactiveRadioIcon" alt="" class="mobile-radio-icon" />
+              <span :class="{ 'mobile-filter-option-active': statusFilter === 'new' }">Новый</span>
+            </div>
+            <div class="mobile-filter-option" @click.stop="selectStatusFilter('paid')">
+              <img :src="statusFilter === 'paid' ? activeRadioIcon : inactiveRadioIcon" alt="" class="mobile-radio-icon" />
+              <span :class="{ 'mobile-filter-option-active': statusFilter === 'paid' }">Оплачен</span>
+            </div>
+            <div class="mobile-filter-option" @click.stop="selectStatusFilter('in-progress')">
+              <img :src="statusFilter === 'in-progress' ? activeRadioIcon : inactiveRadioIcon" alt="" class="mobile-radio-icon" />
+              <span :class="{ 'mobile-filter-option-active': statusFilter === 'in-progress' }">В работе</span>
+            </div>
+            <div class="mobile-filter-option" @click.stop="selectStatusFilter('sent')">
+              <img :src="statusFilter === 'sent' ? activeRadioIcon : inactiveRadioIcon" alt="" class="mobile-radio-icon" />
+              <span :class="{ 'mobile-filter-option-active': statusFilter === 'sent' }">Отправлен</span>
+            </div>
+            <div class="mobile-filter-option" @click.stop="selectStatusFilter('cancelled')">
+              <img :src="statusFilter === 'cancelled' ? activeRadioIcon : inactiveRadioIcon" alt="" class="mobile-radio-icon" />
+              <span :class="{ 'mobile-filter-option-active': statusFilter === 'cancelled' }">Отменен</span>
+            </div>
+            <div class="mobile-filter-option" @click.stop="selectStatusFilter('return')">
+              <img :src="statusFilter === 'return' ? activeRadioIcon : inactiveRadioIcon" alt="" class="mobile-radio-icon" />
+              <span :class="{ 'mobile-filter-option-active': statusFilter === 'return' }">Возврат</span>
+            </div>
+          </div>
         </div>
       </div>
       
@@ -491,7 +531,8 @@ const selectStatusFilter = (value) => {
 
 // Закрытие выпадающих меню при клике вне их
 const handleClickOutside = (event) => {
-  if (!event.target.closest('.header-date') && !event.target.closest('.header-status')) {
+  if (!event.target.closest('.header-date') && !event.target.closest('.header-status') &&
+      !event.target.closest('.mobile-order-filter-item')) {
     isDateFilterOpen.value = false
     isStatusFilterOpen.value = false
   }
@@ -503,11 +544,23 @@ if (typeof window !== 'undefined') {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/assets/styles/breakpoints' as *;
+
 .orders-page {
   width: 100%;
   min-height: 100%;
   background-color: #F6F5EC;
+}
+
+/* Скрываем мобильную версию на десктопе */
+.mobile-order-detail {
+  display: none;
+}
+
+/* Показываем десктопную версию на десктопе */
+.desktop-orders {
+  display: block;
 }
 
 .orders-content {
@@ -898,25 +951,25 @@ if (typeof window !== 'undefined') {
   display: block;
 }
 
-/* Мобильная версия - скрываем десктопную версию */
-@media (max-width: 390px) {
-  .desktop-orders {
+/* Мобильная версия - показываем только на мобильных устройствах */
+@media (max-width: 1279px) {
+  .is-mobile-device .desktop-orders {
     display: none;
   }
 
-  .mobile-order-detail {
+  .is-mobile-device .mobile-order-detail {
     display: block;
     width: 100%;
-    padding: 0 16px 16px 16px;
+    padding: 0 16px 80px 16px; /* Отступ для нижней навигационной панели */
     margin-top: 10px;
     box-sizing: border-box;
     background-color: #F6F5EC;
   }
 
   /* Поиск по номеру заказа */
-  .mobile-order-search {
+  .is-mobile-device .mobile-order-search {
     width: 100%;
-    max-width: 358px;
+    max-width: 100%;
     height: 40px;
     border-radius: 10px;
     padding: 8px 16px;
@@ -932,7 +985,7 @@ if (typeof window !== 'undefined') {
     margin-left: 0;
   }
 
-  .mobile-order-search-input {
+  .is-mobile-device .mobile-order-search-input {
     flex: 1;
     height: 100%;
     border: none;
@@ -949,12 +1002,12 @@ if (typeof window !== 'undefined') {
     min-width: 0;
   }
 
-  .mobile-order-search-input::placeholder {
+  .is-mobile-device .mobile-order-search-input::placeholder {
     color: #1B171699;
     opacity: 1;
   }
 
-  .mobile-order-search-button {
+  .is-mobile-device .mobile-order-search-button {
     width: 24px;
     height: 24px;
     background: none;
@@ -967,7 +1020,7 @@ if (typeof window !== 'undefined') {
     flex-shrink: 0;
   }
 
-  .mobile-order-search-icon {
+  .is-mobile-device .mobile-order-search-icon {
     width: 24px;
     height: 24px;
     object-fit: contain;
@@ -975,16 +1028,16 @@ if (typeof window !== 'undefined') {
   }
 
   /* Фильтры */
-  .mobile-order-filters {
+  .is-mobile-device .mobile-order-filters {
     display: flex;
-    gap: 220px;
+    gap: 16px;
     align-items: center;
     justify-content: flex-start;
     width: 100%;
     margin-top: 0;
   }
 
-  .mobile-order-filter-item {
+  .is-mobile-device .mobile-order-filter-item {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -992,7 +1045,65 @@ if (typeof window !== 'undefined') {
     position: relative;
   }
 
-  .mobile-order-filter-text {
+  /* Выпадающие меню фильтров для мобильной версии */
+  .is-mobile-device .mobile-filter-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
+    border-radius: 10px;
+    padding: 24px 16px;
+    border: 2px solid #640000;
+    background: #F6F5EC;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-sizing: border-box;
+    z-index: 100;
+    animation: slideDown 0.2s ease-out;
+    transform-origin: top;
+  }
+
+  .is-mobile-device .mobile-date-filter-dropdown {
+    width: 230px;
+    min-height: 120px;
+  }
+
+  .is-mobile-device .mobile-status-filter-dropdown {
+    width: 230px;
+    min-height: 360px;
+  }
+
+  .is-mobile-device .mobile-filter-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+  }
+
+  .is-mobile-device .mobile-radio-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .is-mobile-device .mobile-filter-option span {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: -0.01em;
+    color: #1B171699;
+  }
+
+  .is-mobile-device .mobile-filter-option-active {
+    color: #1B1716 !important;
+  }
+
+  .is-mobile-device .mobile-order-filter-text {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-style: normal;
@@ -1002,7 +1113,7 @@ if (typeof window !== 'undefined') {
     color: #1B1716;
   }
 
-  .mobile-order-filter-arrow {
+  .is-mobile-device .mobile-order-filter-arrow {
     width: 13px;
     height: 6px;
     object-fit: contain;
@@ -1010,12 +1121,12 @@ if (typeof window !== 'undefined') {
     transition: transform 0.2s ease;
   }
 
-  .mobile-order-filter-arrow.arrow-rotated {
+  .is-mobile-device .mobile-order-filter-arrow.arrow-rotated {
     transform: rotate(180deg);
   }
 
   /* Список заказов */
-  .mobile-orders-list {
+  .is-mobile-device .mobile-orders-list {
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -1024,9 +1135,9 @@ if (typeof window !== 'undefined') {
     width: calc(100% + 32px);
   }
 
-  .mobile-order-card {
-    width: 390px;
-    height: 121px;
+  .is-mobile-device .mobile-order-card {
+    width: 100%;
+    min-height: 121px;
     padding: 16px;
     gap: 0;
     border-bottom-width: 1px;
@@ -1039,51 +1150,51 @@ if (typeof window !== 'undefined') {
     overflow: hidden;
   }
 
-  .mobile-order-card-sent {
+  .is-mobile-device .mobile-order-card-sent {
     background: #1C2B8C26;
   }
 
-  .mobile-order-card-new {
+  .is-mobile-device .mobile-order-card-new {
     background: #5F8F0026;
   }
 
-  .mobile-order-card-cancelled {
+  .is-mobile-device .mobile-order-card-cancelled {
     background: #64000026;
   }
 
-  .mobile-order-card-row {
+  .is-mobile-device .mobile-order-card-row {
     display: flex;
     align-items: center;
     width: 100%;
     justify-content: space-between;
   }
 
-  .mobile-order-card-row-top {
+  .is-mobile-device .mobile-order-card-row-top {
     margin-bottom: 0;
   }
 
-  .mobile-order-card-row-bottom {
+  .is-mobile-device .mobile-order-card-row-bottom {
     margin-top: 0;
   }
 
-  .mobile-order-card-left {
+  .is-mobile-device .mobile-order-card-left {
     display: flex;
     align-items: center;
     gap: 8px;
   }
 
-  .mobile-order-card-date {
+  .is-mobile-device .mobile-order-card-date {
     text-align: right;
   }
 
-  .mobile-order-card-price {
+  .is-mobile-device .mobile-order-card-price {
     font-weight: 700;
     margin: 4px 0;
     text-align: right;
     width: 100%;
   }
 
-  .mobile-order-card-label {
+  .is-mobile-device .mobile-order-card-label {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -1093,7 +1204,7 @@ if (typeof window !== 'undefined') {
     color: #1B1716;
   }
 
-  .mobile-order-card-value {
+  .is-mobile-device .mobile-order-card-value {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -1103,17 +1214,17 @@ if (typeof window !== 'undefined') {
     color: #1B1716;
   }
 
-  .mobile-order-card-value-bold {
+  .is-mobile-device .mobile-order-card-value-bold {
     font-weight: 700;
   }
 
-  .mobile-order-card-value-container {
+  .is-mobile-device .mobile-order-card-value-container {
     display: flex;
     align-items: center;
     gap: 8px;
   }
 
-  .mobile-order-copy-button {
+  .is-mobile-device .mobile-order-copy-button {
     width: 16px;
     height: 16px;
     background: none;
@@ -1126,18 +1237,18 @@ if (typeof window !== 'undefined') {
     opacity: 0.6;
   }
 
-  .mobile-order-copy-icon {
+  .is-mobile-device .mobile-order-copy-icon {
     width: 16px;
     height: 16px;
     display: block;
   }
 
   /* Кнопка назад */
-  .mobile-order-back {
+  .is-mobile-device .mobile-order-back {
     margin-bottom: 24px;
   }
 
-  .mobile-back-button {
+  .is-mobile-device .mobile-back-button {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -1147,14 +1258,14 @@ if (typeof window !== 'undefined') {
     cursor: pointer;
   }
 
-  .mobile-back-arrow {
+  .is-mobile-device .mobile-back-arrow {
     width: 6px;
     height: 13px;
     background: transparent;
     position: relative;
   }
 
-  .mobile-back-arrow::before {
+  .is-mobile-device .mobile-back-arrow::before {
     content: '';
     position: absolute;
     top: 50%;
@@ -1166,7 +1277,7 @@ if (typeof window !== 'undefined') {
     border-radius: 1px;
   }
 
-  .mobile-back-arrow::after {
+  .is-mobile-device .mobile-back-arrow::after {
     content: '';
     position: absolute;
     top: 50%;
@@ -1178,7 +1289,7 @@ if (typeof window !== 'undefined') {
     border-radius: 1px;
   }
 
-  .mobile-back-text {
+  .is-mobile-device .mobile-back-text {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -1503,10 +1614,56 @@ if (typeof window !== 'undefined') {
   }
 }
 
-/* Десктопная версия */
-@media (min-width: 391px) {
+/* Десктопная версия - всегда показываем десктопную версию на десктопных устройствах */
+@include desktop {
+  .desktop-orders {
+    display: block;
+  }
+
   .mobile-order-detail {
     display: none;
+  }
+}
+
+/* Для десктопных устройств всегда применяем десктопные стили даже при масштабировании */
+.is-desktop-device .desktop-orders {
+  display: block !important;
+}
+
+.is-desktop-device .mobile-order-detail {
+  display: none !important;
+}
+
+/* Адаптация для очень маленьких экранов (до 300px) */
+@media (max-width: 300px) {
+  .is-mobile-device .mobile-order-detail {
+    padding: 0 8px 80px 8px;
+  }
+
+  .is-mobile-device .mobile-order-search {
+    padding: 6px 12px;
+  }
+
+  .is-mobile-device .mobile-order-search-input {
+    font-size: 14px;
+  }
+
+  .is-mobile-device .mobile-order-filter-text {
+    font-size: 14px;
+  }
+
+  .is-mobile-device .mobile-order-card {
+    padding: 12px;
+    min-height: 110px;
+  }
+
+  .is-mobile-device .mobile-order-card-label,
+  .is-mobile-device .mobile-order-card-value {
+    font-size: 14px;
+  }
+
+  .is-mobile-device .mobile-order-card-price {
+    font-size: 16px;
   }
 }
 </style>

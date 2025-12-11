@@ -53,8 +53,15 @@ export const useCartStore = defineStore('cart', {
         )
         this.items = itemsWithProducts
       } catch (error) {
-        this.error = error.message
-        console.error('Ошибка загрузки корзины:', error)
+        // Если API недоступен, не показываем ошибку пользователю, просто используем пустую корзину
+        if (error.message === 'API_SERVER_UNAVAILABLE') {
+          console.warn('Бэкенд API недоступен. Работаем в оффлайн режиме.')
+          this.items = []
+          // Не устанавливаем error, чтобы не пугать пользователя
+        } else {
+          this.error = error.message
+          console.error('Ошибка загрузки корзины:', error)
+        }
       } finally {
         this.loading = false
       }

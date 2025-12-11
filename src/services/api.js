@@ -23,6 +23,13 @@ async function request(url, options = {}) {
 
     return await response.json()
   } catch (error) {
+    // Более информативная обработка ошибок
+    if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+      const apiUrl = `${API_BASE_URL}${url}`
+      console.warn(`API недоступен (${apiUrl}). Убедитесь, что бэкенд запущен на порту 8000.`)
+      // Возвращаем пустые данные вместо ошибки для некоторых запросов
+      throw new Error('API_SERVER_UNAVAILABLE')
+    }
     console.error('API request failed:', error)
     throw error
   }

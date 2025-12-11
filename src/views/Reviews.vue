@@ -187,11 +187,23 @@ const toggleReview = (index) => {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/assets/styles/breakpoints' as *;
+
 .reviews-page {
   width: 100%;
   min-height: 100%;
   background-color: #F6F5EC;
+}
+
+/* Скрываем мобильную версию на десктопе */
+.mobile-reviews-content {
+  display: none;
+}
+
+/* Показываем десктопную версию на десктопе */
+.desktop-reviews-content {
+  display: block;
 }
 
 .reviews-content {
@@ -406,27 +418,24 @@ const toggleReview = (index) => {
   transform: rotate(180deg);
 }
 
-.mobile-reviews-content {
-  display: none;
-}
-
-@media (max-width: 390px) {
-  .desktop-reviews-content {
+/* Мобильная версия - показываем только на мобильных устройствах */
+@media (max-width: 1279px) {
+  .is-mobile-device .desktop-reviews-content {
     display: none;
   }
 
-  .mobile-reviews-content {
+  .is-mobile-device .mobile-reviews-content {
     display: block;
     width: 100%;
     max-width: 100%;
     padding: 16px;
-    padding-top: 50px;
-    padding-bottom: 80px;
+    padding-top: 20px;
+    padding-bottom: 80px; /* Отступ для нижней навигационной панели */
     box-sizing: border-box;
     overflow-x: hidden;
   }
 
-  .mobile-reviews-title {
+  .is-mobile-device .mobile-reviews-title {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -439,7 +448,7 @@ const toggleReview = (index) => {
     margin-bottom: 16px;
   }
 
-  .mobile-reviews-list {
+  .is-mobile-device .mobile-reviews-list {
     width: 100%;
     max-width: 100%;
     display: flex;
@@ -448,7 +457,7 @@ const toggleReview = (index) => {
     overflow-x: hidden;
   }
 
-  .mobile-review-item {
+  .is-mobile-device .mobile-review-item {
     width: 100%;
     border-bottom: 2px solid #640000;
     padding: 16px 0;
@@ -456,7 +465,7 @@ const toggleReview = (index) => {
     overflow: visible;
   }
 
-  .mobile-review-header {
+  .is-mobile-device .mobile-review-header {
     width: 100%;
     max-width: 100%;
     display: flex;
@@ -465,7 +474,7 @@ const toggleReview = (index) => {
     gap: 12px;
   }
 
-  .mobile-review-content-wrapper {
+  .is-mobile-device .mobile-review-content-wrapper {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -475,7 +484,7 @@ const toggleReview = (index) => {
     min-width: 0;
   }
 
-  .mobile-review-username {
+  .is-mobile-device .mobile-review-username {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-style: normal;
@@ -485,13 +494,13 @@ const toggleReview = (index) => {
     color: #1B1716;
   }
 
-  .mobile-review-product {
+  .is-mobile-device .mobile-review-product {
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
 
-  .mobile-review-label {
+  .is-mobile-device .mobile-review-label {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -501,7 +510,7 @@ const toggleReview = (index) => {
     color: #1B171699;
   }
 
-  .mobile-review-product-name {
+  .is-mobile-device .mobile-review-product-name {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -511,13 +520,13 @@ const toggleReview = (index) => {
     color: #1B171699;
   }
 
-  .mobile-review-text {
+  .is-mobile-device .mobile-review-text {
     display: flex;
     flex-direction: column;
     gap: 0;
   }
 
-  .mobile-review-text p {
+  .is-mobile-device .mobile-review-text p {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -528,13 +537,13 @@ const toggleReview = (index) => {
     margin: 0;
   }
 
-  .mobile-review-seller-response {
+  .is-mobile-device .mobile-review-seller-response {
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
 
-  .mobile-seller-label {
+  .is-mobile-device .mobile-seller-label {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-style: normal;
@@ -544,7 +553,7 @@ const toggleReview = (index) => {
     color: #1B171699;
   }
 
-  .mobile-seller-text {
+  .is-mobile-device .mobile-seller-text {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -555,7 +564,7 @@ const toggleReview = (index) => {
     margin: 0;
   }
 
-  .mobile-review-toggle-button {
+  .is-mobile-device .mobile-review-toggle-button {
     width: 24px;
     height: 24px;
     background: none;
@@ -569,7 +578,7 @@ const toggleReview = (index) => {
     margin-top: 0;
   }
 
-  .mobile-review-arrow {
+  .is-mobile-device .mobile-review-arrow {
     width: 13px;
     height: 6px;
     object-fit: contain;
@@ -577,7 +586,7 @@ const toggleReview = (index) => {
     transition: transform 0.2s ease;
   }
 
-  .mobile-review-images {
+  .is-mobile-device .mobile-review-images {
     display: flex;
     gap: 16px;
     overflow-x: auto;
@@ -594,16 +603,54 @@ const toggleReview = (index) => {
     box-sizing: content-box;
   }
 
-  .mobile-review-images::-webkit-scrollbar {
+  .is-mobile-device .mobile-review-images::-webkit-scrollbar {
     display: none;
   }
 
-  .mobile-review-image-placeholder {
+  .is-mobile-device .mobile-review-image-placeholder {
     width: 100px;
     height: 100px;
     border-radius: 10px;
     background: #888888;
     flex-shrink: 0;
+  }
+}
+
+/* Десктопная версия - всегда показываем десктопную версию на десктопных устройствах */
+@include desktop {
+  .desktop-reviews-content {
+    display: block;
+  }
+
+  .mobile-reviews-content {
+    display: none;
+  }
+}
+
+/* Для десктопных устройств всегда применяем десктопные стили даже при масштабировании */
+.is-desktop-device .desktop-reviews-content {
+  display: block !important;
+}
+
+.is-desktop-device .mobile-reviews-content {
+  display: none !important;
+}
+
+/* Адаптация для очень маленьких экранов (до 300px) */
+@media (max-width: 300px) {
+  .is-mobile-device .mobile-reviews-content {
+    padding: 0 8px 80px 8px;
+  }
+
+  .is-mobile-device .mobile-reviews-title {
+    font-size: 18px;
+  }
+
+  .is-mobile-device .mobile-review-username,
+  .is-mobile-device .mobile-review-label,
+  .is-mobile-device .mobile-review-product-name,
+  .is-mobile-device .mobile-review-text p {
+    font-size: 14px;
   }
 }
 </style>

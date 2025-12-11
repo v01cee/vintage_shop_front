@@ -958,8 +958,8 @@ const closePhotoModal = () => {
   opacity: 0.8;
 }
 
-/* Мобильная версия страницы товара */
-@media (max-width: 390px) {
+/* Мобильная версия страницы товара (до 550px) */
+@media (max-width: 550px) {
   .mobile-product {
     padding: 0 16px;
     padding-bottom: 182px; /* 118px (меню действий) + 64px (нижняя панель) */
@@ -1007,9 +1007,11 @@ const closePhotoModal = () => {
     color: #1B1716;
     margin: 16px 0 0 0;
     padding: 0;
-    width: 358px;
+    width: 100%;
+    max-width: 100%;
     height: auto;
     min-height: 57px;
+    box-sizing: border-box;
   }
 
   /* Прокручиваемые теги характеристик */
@@ -1184,8 +1186,10 @@ const closePhotoModal = () => {
 
   /* Секция Рекомендуем */
   .mobile-recommended-section {
-    margin-top: 40px;
+    margin-top: 60px;
+    margin-bottom: 40px;
     padding: 0 16px;
+    box-sizing: border-box;
   }
 
   .mobile-recommended-title {
@@ -1204,14 +1208,16 @@ const closePhotoModal = () => {
 
   .mobile-recommended-products {
     display: grid;
-    grid-template-columns: repeat(2, 175px);
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
-    justify-content: center;
     width: 100%;
+    box-sizing: border-box;
   }
 
   .mobile-recommended-card {
-    width: 175px;
+    width: 100%;
+    max-width: 175px;
+    margin: 0 auto;
     background: #F6F5EC;
     border-radius: 10px;
     overflow: hidden;
@@ -1219,7 +1225,7 @@ const closePhotoModal = () => {
 
   .mobile-card-image-wrapper {
     position: relative;
-    width: 175px;
+    width: 100%;
     height: 231px;
     overflow: visible;
   }
@@ -1336,7 +1342,8 @@ const closePhotoModal = () => {
   }
 
   .mobile-card-add-to-cart-button {
-    width: 175px;
+    width: 100%;
+    max-width: 175px;
     height: 31px;
     border-radius: 10px;
     padding: 8px 24px;
@@ -1349,6 +1356,7 @@ const closePhotoModal = () => {
     gap: 8px;
     margin: 8px auto 0;
     align-self: center;
+    box-sizing: border-box;
   }
 
   .mobile-card-cart-icon {
@@ -1375,7 +1383,7 @@ const closePhotoModal = () => {
     left: 0;
     right: 0;
     width: 100%;
-    max-width: 390px;
+    max-width: 100%;
     height: 118px;
     padding: 16px;
     gap: 8px;
@@ -1408,19 +1416,21 @@ const closePhotoModal = () => {
   }
 
   .mobile-buy-now-button {
-    width: 175px;
+    flex: 1;
     height: 35px;
     background: #1B171699;
+    min-width: 0;
   }
 
   .mobile-add-to-cart-button {
-    width: 175px;
+    flex: 1;
     height: 35px;
     background: #640000;
+    min-width: 0;
   }
 
   .mobile-ask-question-button {
-    width: 358px;
+    width: 100%;
     height: 35px;
     background: #F6F5EC;
     border: 2px solid #1B1716;
@@ -1444,17 +1454,86 @@ const closePhotoModal = () => {
   .mobile-ask-question-button .mobile-action-text {
     color: #1B1716;
   }
+
+  /* Адаптация для очень маленьких экранов (до 300px) */
+  @media (max-width: 300px) {
+    .mobile-product {
+      padding: 0 8px;
+    }
+
+    .mobile-photo-item {
+      width: calc(100vw - 32px);
+      max-width: 284px;
+      height: calc(100vw - 32px);
+      max-height: 284px;
+    }
+
+    .mobile-product-title {
+      font-size: 14px;
+    }
+
+    .mobile-price-value {
+      font-size: 20px;
+    }
+
+    .mobile-price-label,
+    .mobile-boutique-price-label {
+      font-size: 14px;
+    }
+
+    .mobile-recommended-section {
+      padding: 0 8px;
+    }
+
+    .mobile-recommended-products {
+      gap: 6px;
+    }
+
+    .mobile-actions-menu {
+      padding: 12px;
+    }
+
+    .mobile-action-button {
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+
+    .mobile-buy-now-button,
+    .mobile-add-to-cart-button {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .mobile-ask-question-button {
+      width: 100%;
+    }
+
+    .mobile-action-text {
+      font-size: 14px;
+    }
+  }
 }
 
-/* Скрываем мобильную версию на десктопе */
-@media (min-width: 391px) {
+/* Явно показываем десктопную версию на экранах от 1280px (даже при масштабировании) */
+@media (min-width: 1280px) {
+  .mobile-product {
+    display: none !important;
+  }
+
+  .desktop-product {
+    display: block !important;
+  }
+}
+
+/* Скрываем мобильную версию на планшетах и десктопе (до 1280px тоже) */
+@media (min-width: 551px) and (max-width: 1279px) {
   .mobile-product {
     display: none;
   }
 }
 
 /* Скрываем десктопную версию на мобильных */
-@media (max-width: 390px) {
+@media (max-width: 550px) {
   .desktop-product {
     display: none;
   }

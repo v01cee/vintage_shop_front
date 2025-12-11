@@ -1,7 +1,7 @@
 <template>
   <div class="about-owner-page">
     <div class="mobile-about-owner-content">
-      <h1 class="mobile-about-owner-title">О владельце</h1>
+      <h1 class="mobile-about-owner-title">О сайте</h1>
       
       <p class="mobile-about-owner-text">
         Lorem ipsum dolor sit amet consectetur. Libero duis amet luctus lacus. Posuere enim lorem sed in morbi. Fringilla ultrices sit tortor cursus sagittis enim gravida. Turpis porta malesuada mauris viverra massa. Pellentesque erat facilisi adipiscing vestibulum gravida elit in. Erat vulputate maecenas at venenatis.
@@ -35,9 +35,9 @@
       </div>
     </div>
     <div class="about-owner-content desktop-about-owner-content">
-      <!-- Секция "О владельце" -->
+      <!-- Секция "О сайте" -->
       <section class="about-seller-section">
-        <h1 class="section-title">О владельце</h1>
+        <h1 class="section-title">О сайте</h1>
         <div class="about-seller-content">
           <div class="about-seller-text">
             <p>Lorem ipsum dolor sit amet consectetur. Libero duis amet luctus lacus. Posuere enim lorem sed in morbi. Fringilla ultrices sit tortor cursus sagittis enim gravida. Turpis porta malesuada mauris viverra massa. Pellentesque erat facilisi adipiscing vestibulum gravida elit in. Erat vulputate maecenas at venenatis.</p>
@@ -79,14 +79,26 @@
 </template>
 
 <script setup>
-// Страница "О владельце"
+// Страница "О сайте"
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/assets/styles/breakpoints' as *;
+
 .about-owner-page {
   width: 100%;
   min-height: calc(100vh - 224px);
   background: #F6F5EC;
+}
+
+/* Скрываем мобильную версию на десктопе */
+.mobile-about-owner-content {
+  display: none;
+}
+
+/* Показываем десктопную версию на десктопе */
+.desktop-about-owner-content {
+  display: block;
 }
 
 .about-owner-content {
@@ -97,7 +109,7 @@
   box-sizing: border-box;
 }
 
-/* Секция "О владельце" */
+/* Секция "О сайте" */
 .about-seller-section {
   margin-bottom: 48px;
 }
@@ -231,25 +243,22 @@
   padding: 0;
 }
 
-.mobile-about-owner-content {
-  display: none;
-}
-
-@media (max-width: 390px) {
-  .desktop-about-owner-content {
+/* Мобильная версия - показываем только на мобильных устройствах */
+@media (max-width: 1279px) {
+  .is-mobile-device .desktop-about-owner-content {
     display: none;
   }
 
-  .mobile-about-owner-content {
+  .is-mobile-device .mobile-about-owner-content {
     display: block;
     width: 100%;
     padding: 16px;
-    padding-top: 50px;
-    padding-bottom: 80px;
+    padding-top: 20px;
+    padding-bottom: 80px; /* Отступ для нижней навигационной панели */
     box-sizing: border-box;
   }
 
-  .mobile-about-owner-title {
+  .is-mobile-device .mobile-about-owner-title {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-style: normal;
@@ -262,7 +271,7 @@
     margin-bottom: 16px;
   }
 
-  .mobile-about-owner-text {
+  .is-mobile-device .mobile-about-owner-text {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -275,15 +284,16 @@
     margin-bottom: 16px;
   }
 
-  .mobile-about-owner-image {
-    width: 358px;
+  .is-mobile-device .mobile-about-owner-image {
+    width: 100%;
+    max-width: 100%;
     height: 208px;
     border-radius: 10px;
     background: #8A8A8A;
     margin-bottom: 16px;
   }
 
-  .mobile-guide-title {
+  .is-mobile-device .mobile-guide-title {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-style: normal;
@@ -297,7 +307,7 @@
     margin-top: 16px;
   }
 
-  .mobile-guide-text {
+  .is-mobile-device .mobile-guide-text {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -309,7 +319,7 @@
     padding: 0;
   }
 
-  .mobile-guide-text-bold {
+  .is-mobile-device .mobile-guide-text-bold {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-style: normal;
@@ -319,7 +329,7 @@
     color: #1B1716;
   }
 
-  .mobile-guide-text-regular {
+  .is-mobile-device .mobile-guide-text-regular {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -329,12 +339,13 @@
     color: #1B1716;
   }
 
-  .mobile-guide-block {
+  .is-mobile-device .mobile-guide-block {
     margin-bottom: 24px;
   }
 
-  .mobile-guide-image {
-    width: 358px;
+  .is-mobile-device .mobile-guide-image {
+    width: 100%;
+    max-width: 100%;
     height: 208px;
     border-radius: 10px;
     background: #8A8A8A;
@@ -342,7 +353,7 @@
     margin-bottom: 8px;
   }
 
-  .mobile-guide-caption {
+  .is-mobile-device .mobile-guide-caption {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -353,6 +364,49 @@
     color: #1B1716;
     margin: 0;
     padding: 0;
+  }
+}
+
+/* Десктопная версия - всегда показываем десктопную версию на десктопных устройствах */
+@include desktop {
+  .desktop-about-owner-content {
+    display: block;
+  }
+
+  .mobile-about-owner-content {
+    display: none;
+  }
+}
+
+/* Для десктопных устройств всегда применяем десктопные стили даже при масштабировании */
+.is-desktop-device .desktop-about-owner-content {
+  display: block !important;
+}
+
+.is-desktop-device .mobile-about-owner-content {
+  display: none !important;
+}
+
+/* Адаптация для очень маленьких экранов (до 300px) */
+@media (max-width: 300px) {
+  .is-mobile-device .mobile-about-owner-content {
+    padding: 0 8px 80px 8px;
+  }
+
+  .is-mobile-device .mobile-about-owner-title {
+    font-size: 20px;
+  }
+
+  .is-mobile-device .mobile-about-owner-text,
+  .is-mobile-device .mobile-guide-text,
+  .is-mobile-device .mobile-guide-text-bold,
+  .is-mobile-device .mobile-guide-text-regular {
+    font-size: 14px;
+  }
+
+  .is-mobile-device .mobile-about-owner-image,
+  .is-mobile-device .mobile-guide-image {
+    height: 180px;
   }
 }
 </style>

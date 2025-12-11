@@ -56,14 +56,26 @@ const handleAddToCart = (e) => {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/assets/styles/breakpoints' as *;
 .product-card {
-  width: 236px;
+  width: 100%; /* Адаптируется под размер колонки Grid */
+  max-width: 236px; /* Максимальная ширина для десктопа */
   background: #F6F5EC;
   border-radius: 10px;
-  overflow: hidden;
+  overflow: hidden; /* Скрываем переполнение */
   opacity: 1;
   cursor: pointer;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Обрезаем только изображение, чтобы сохранить border-radius */
+.product-card .card-image-wrapper {
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
 }
 
 .card-image-wrapper {
@@ -72,6 +84,7 @@ const handleAddToCart = (e) => {
   height: 287px;
   overflow: hidden;
   border-radius: 10px 10px 0 0;
+  z-index: 0;
 }
 
 .card-image {
@@ -110,16 +123,23 @@ const handleAddToCart = (e) => {
 }
 
 .card-content {
-  padding: 16px 16px 16px 0;
+  padding: 16px;
   display: flex;
   flex-direction: column;
+  align-items: flex-start; /* Выравниваем все элементы по левому краю, как в разделе "Рекомендуем" */
   gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
 }
 
 .card-prices {
   display: flex;
   align-items: baseline;
+  justify-content: flex-start; /* Выравниваем цены по левому краю */
   gap: 8px;
+  width: 100%; /* Занимает всю ширину для правильного выравнивания */
 }
 
 .card-price-current {
@@ -175,10 +195,12 @@ const handleAddToCart = (e) => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: left;
 }
 
 .card-add-to-cart-button {
-  width: 230px;
+  width: 100%;
+  max-width: 230px;
   height: 35px;
   border-radius: 10px;
   padding: 8px 24px;
@@ -192,6 +214,9 @@ const handleAddToCart = (e) => {
   gap: 8px;
   opacity: 1;
   transition: background-color 0.2s ease, opacity 0.2s ease;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 10;
 }
 
 .card-add-to-cart-button:hover {
@@ -218,11 +243,50 @@ const handleAddToCart = (e) => {
   height: auto;
 }
 
-/* Мобильная адаптация для экранов 390px */
-@media (max-width: 390px) {
+/* Выравнивание для десктопа (от 1280px) */
+@include desktop {
+  .card-content {
+    align-items: flex-start; /* Выравниваем все элементы по левому краю */
+  }
+
+  .card-prices {
+    justify-content: flex-start; /* Цены по левому краю */
+    width: 100%;
+  }
+
+  .card-price-label {
+    text-align: left;
+  }
+
+  .card-description {
+    text-align: left;
+    width: 100%;
+    align-self: flex-start;
+  }
+  .card-add-to-cart-button {
+    display: flex;
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+/* Выравнивание текста для мобильных и планшетов (до 768px) */
+@media (max-width: 768px) {
+  .card-content {
+    align-items: flex-start !important; /* Выравниваем все элементы по левому краю */
+  }
+
+  .card-description {
+    text-align: left !important;
+    align-self: flex-start !important;
+    width: 100%;
+  }
+}
+
+/* Мобильная адаптация для экранов до 450px (iPhone 12, iPhone 14 Pro Max и меньше) */
+@media (max-width: 450px) {
   .product-card {
-    width: 175px;
-    max-width: 175px;
+    max-width: 100%; /* На мобилке карточка занимает всю ширину колонки */
     overflow: hidden;
   }
 
@@ -335,9 +399,13 @@ const handleAddToCart = (e) => {
     line-height: 100%;
     letter-spacing: -0.01em;
     color: #1B1716;
-    width: auto;
+    width: 100%;
+    max-width: 100%;
     height: auto;
     padding-left: 0;
+    padding-right: 0;
+    text-align: left !important;
+    align-self: flex-start;
   }
 
   .card-prices {
@@ -345,11 +413,17 @@ const handleAddToCart = (e) => {
   }
 
   .card-add-to-cart-button {
-    width: 175px;
+    width: 100%;
+    max-width: 100%;
     height: 31px;
-    padding: 8px 24px;
-    margin: 8px auto 0;
-    align-self: center;
+    padding: 8px 16px;
+    margin: 8px 0 0;
+    align-self: stretch;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    visibility: visible;
+    opacity: 1;
   }
 
   .card-cart-text {
