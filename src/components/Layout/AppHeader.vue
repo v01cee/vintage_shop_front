@@ -1321,7 +1321,8 @@ onUnmounted(() => {
   .is-mobile-device .filter-button,
   .is-mobile-device .categories-wrapper,
   .is-mobile-device .menu-navigation,
-  .is-mobile-device .info-banner-contacts {
+  .is-mobile-device .info-banner-contacts,
+  .is-mobile-device .info-banner {
     display: none;
   }
 
