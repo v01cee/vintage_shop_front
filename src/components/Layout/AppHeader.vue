@@ -72,7 +72,7 @@
           {{ cartStore.totalItems }}
         </span>
       </button>
-      <div class="info-banner">
+      <div v-if="!isMobileDevice" class="info-banner">
         <span class="info-banner-text">Оригиналы по ценам от поставщика. Выгоднее чем в бутиках.</span>
         <div class="info-banner-contacts">
           <span class="info-banner-phone">+7 (495) 374-78-74</span>
@@ -289,6 +289,7 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useProductsStore } from '@/stores/products'
 import { useCartStore } from '@/stores/cart'
+import { isMobileDevice as checkMobileDevice } from '@/utils/deviceDetector'
 // import LoginModal from '@/components/Auth/LoginModal.vue'
 import logoImage from '../../../лого главный экран.svg'
 import menuIcon from '../../../меню.svg'
@@ -336,11 +337,9 @@ const currentOrdersIcon = computed(() => {
   return route.name === 'Orders' ? ordersActiveIcon : ordersIcon
 })
 
-const shouldShowAdBanner = computed(() => {
-  const routeName = route.name
-  // Показываем баннер на всех страницах кроме Cart, Orders и Product
-  // Если route.name undefined (главная страница при первой загрузке), тоже показываем
-  return routeName !== 'Cart' && routeName !== 'Orders' && routeName !== 'Product'
+const isMobileDevice = computed(() => {
+  if (typeof window === 'undefined') return false
+  return document.documentElement.classList.contains('is-mobile-device')
 })
 
 const filterOptions = [
@@ -1271,14 +1270,6 @@ onUnmounted(() => {
     height: 75px;
   }
 
-  /* Баннер на странице корзины - центрирован и с отступом от суммы */
-  .is-mobile-device .app-header.cart-page .info-banner {
-    left: 50%;
-    transform: translateX(-50%);
-    top: 75px;
-    width: calc(100% - 32px);
-    max-width: 100%;
-  }
 
   /* Уменьшаем высоту хедера на странице заказов */
   .is-mobile-device .app-header.orders-page {
@@ -1389,23 +1380,9 @@ onUnmounted(() => {
     white-space: nowrap;
   }
 
-  /* Информационный баннер */
-  .info-banner {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 72px;
-    width: calc(100% - 32px);
-    max-width: 100%;
-    height: 28px;
-    border-radius: 10px;
-    padding: 8px 16px;
-    gap: 8px;
-    background: #640000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
+  /* Информационный баннер - скрыт на мобильных */
+  .is-mobile-device .info-banner {
+    display: none !important;
   }
 
   .info-banner-text {
