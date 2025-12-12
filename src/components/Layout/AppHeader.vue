@@ -164,17 +164,6 @@
         </div>
       </div>
       
-      <!-- Рекламный баннер для мобильных -->
-      <div v-if="(route.name !== 'Cart' && route.name !== 'Orders' && route.name !== 'Product' && route.name !== undefined) && adBannerLoaded" class="mobile-ad-banner">
-        <img 
-          :src="adBanner" 
-          alt="Реклама" 
-          class="ad-banner-image" 
-          @error="handleBannerError"
-          @load="handleBannerLoad"
-        />
-      </div>
-      
       <!-- Поисковая строка для мобильных -->
       <div v-if="route.name !== 'Cart' && route.name !== 'Orders'" class="mobile-search-wrapper">
         <input 
@@ -316,7 +305,6 @@ import whatsappIcon from '../../../значок Whatshap.svg'
 import homeIcon from '../../../иконка главное меню.svg'
 import menuIconMobile from '../../../иконка меню.svg'
 import loginActiveIcon from '../../../активная иконка профиля.svg'
-import adBanner from '../../../реклама.svg'
 
 const router = useRouter()
 const route = useRoute()
@@ -326,7 +314,6 @@ const cartStore = useCartStore()
 const searchQuery = ref('')
 const isFilterModalOpen = ref(false)
 const isMenuOpen = ref(false)
-const adBannerLoaded = ref(true) // По умолчанию показываем баннер
 // const isLoginModalOpen = ref(false) // TODO: Использовать в другом месте
 const selectedFilter = computed({
   get: () => productsStore.selectedFilter,
@@ -347,6 +334,13 @@ const currentCartIcon = computed(() => {
 
 const currentOrdersIcon = computed(() => {
   return route.name === 'Orders' ? ordersActiveIcon : ordersIcon
+})
+
+const shouldShowAdBanner = computed(() => {
+  const routeName = route.name
+  // Показываем баннер на всех страницах кроме Cart, Orders и Product
+  // Если route.name undefined (главная страница при первой загрузке), тоже показываем
+  return routeName !== 'Cart' && routeName !== 'Orders' && routeName !== 'Product'
 })
 
 const filterOptions = [
@@ -442,37 +436,9 @@ const handleOffer = () => {
   console.log('Офферта')
 }
 
-const handleBannerError = (event) => {
-  // Если баннер не загрузился, скрываем его
-  console.warn('Рекламный баннер не загрузился:', event)
-  console.warn('Путь к баннеру:', adBanner)
-  adBannerLoaded.value = false
-}
-
-const handleBannerLoad = () => {
-  // Баннер успешно загрузился
-  console.log('Рекламный баннер успешно загружен')
-  adBannerLoaded.value = true
-}
-
-// Загружаем корзину и проверяем баннер при монтировании компонента
+// Загружаем корзину при монтировании компонента
 onMounted(() => {
   cartStore.fetchCart()
-  
-  // Проверяем наличие баннера
-  if (typeof adBanner !== 'undefined' && adBanner) {
-    console.log('Баннер импортирован:', adBanner)
-    console.log('Условие отображения:', {
-      routeName: route.name,
-      isNotCart: route.name !== 'Cart',
-      isNotOrders: route.name !== 'Orders',
-      isNotProduct: route.name !== 'Product',
-      adBannerLoaded: adBannerLoaded.value
-    })
-  } else {
-    console.warn('Баннер не импортирован')
-    adBannerLoaded.value = false
-  }
 })
 
 // Добавляем/убираем класс на body при открытии/закрытии меню для плавного сдвига контента
@@ -1454,35 +1420,6 @@ onUnmounted(() => {
     white-space: nowrap;
   }
 
-  /* Рекламный баннер для мобильных */
-  .is-mobile-device .mobile-ad-banner {
-    position: absolute !important;
-    left: 16px !important;
-    top: 108px !important;
-    width: calc(100% - 32px) !important;
-    max-width: 100% !important;
-    height: 108px !important; /* Фиксированная высота для одинакового отображения */
-    display: block !important;
-    box-sizing: border-box;
-    margin-bottom: 0;
-    overflow: hidden; /* Обрезаем лишнее */
-    border-radius: 10px; /* Скругление углов */
-    z-index: 5 !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  .is-mobile-device .ad-banner-image {
-    width: 100%;
-    height: 100%; /* Заполняем всю высоту контейнера */
-    display: block !important;
-    object-fit: cover; /* Заполняем контейнер, сохраняя пропорции */
-    object-position: center;
-    border-radius: 10px; /* Скругление углов для изображения */
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
   /* Поисковая строка для мобильных */
   .mobile-search-wrapper {
     position: absolute;
@@ -1501,10 +1438,6 @@ onUnmounted(() => {
     box-sizing: border-box;
   }
 
-  /* Позиция поиска на главной странице (когда есть рекламный баннер) */
-  .app-header:has(.mobile-ad-banner) .mobile-search-wrapper {
-    top: 224px; /* 108px (top баннера) + 108px (высота баннера) + 8px (отступ) */
-  }
 
   .mobile-search-input {
     flex: 1;
@@ -1583,10 +1516,6 @@ onUnmounted(() => {
     box-sizing: border-box;
   }
 
-  /* Позиция категорий на главной странице (когда есть рекламный баннер) */
-  .app-header:has(.mobile-ad-banner) .mobile-category {
-    top: 267px; /* 108px (top баннера) + 108px (высота баннера) + 35px (высота поиска) + 8px (отступ) + 8px (дополнительный отступ) */
-  }
 
   .mobile-category-icon {
     width: 32px;
