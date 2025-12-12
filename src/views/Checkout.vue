@@ -84,15 +84,6 @@
             <span class="info-label">Сумма:</span>
             <span class="info-value"><span class="info-value-bold">6250</span> рублей</span>
           </div>
-          <div class="info-item">
-            <span class="info-label">Трек:</span>
-            <div class="info-value-container">
-              <span class="info-value">8665 11 00 1347 2</span>
-              <button class="copy-button" type="button">
-                <img :src="copyIconSvg" alt="Копировать" class="copy-icon" />
-              </button>
-            </div>
-          </div>
         </div>
 
         <div class="delivery-section">
@@ -189,15 +180,6 @@
         <div class="mobile-checkout-info-item">
           <span class="mobile-checkout-info-label">Сумма:</span>
           <span class="mobile-checkout-info-value"><span class="mobile-checkout-info-value-bold">6250</span> рублей</span>
-        </div>
-        <div class="mobile-checkout-info-item">
-          <span class="mobile-checkout-info-label">Трек:</span>
-          <div class="mobile-checkout-info-value-container">
-            <span class="mobile-checkout-info-value">8665 11 00 1347 2</span>
-            <button class="mobile-checkout-copy-button" type="button" @click="copyToClipboard('8665 11 00 1347 2')">
-              <img :src="copyIconSvg" alt="Копировать" class="mobile-checkout-copy-icon" />
-            </button>
-          </div>
         </div>
       </div>
       
@@ -1025,15 +1007,16 @@ const copyToClipboard = async (text) => {
 }
 
 /* Мобильная версия - скрываем десктопную версию */
-@media (max-width: 390px) {
-  .desktop-checkout {
+@media (max-width: 550px) {
+  .is-mobile-device .desktop-checkout {
     display: none;
   }
 
-  .mobile-checkout {
+  .is-mobile-device .mobile-checkout {
     display: block;
     width: 100%;
     padding: 16px;
+    padding-top: 60px; /* Отступ от баннера */
     padding-bottom: 200px; /* Отступ для фиксированных элементов внизу */
     box-sizing: border-box;
     background-color: #F6F5EC;
@@ -1415,7 +1398,8 @@ const copyToClipboard = async (text) => {
 
   .mobile-checkout-form-input,
   .mobile-checkout-form-select {
-    width: 358px;
+    width: 100%;
+    max-width: 100%;
     height: 40px;
     border-radius: 10px;
     padding: 8px 16px;
@@ -1442,7 +1426,8 @@ const copyToClipboard = async (text) => {
   }
 
   .mobile-checkout-form-select {
-    width: 197px;
+    width: 100%;
+    max-width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1475,8 +1460,9 @@ const copyToClipboard = async (text) => {
   }
 
   .mobile-checkout-comments-display {
-    width: 358px;
-    height: 113px;
+    width: 100%;
+    max-width: 100%;
+    min-height: 113px;
     border-radius: 10px;
     padding: 16px 24px;
     border: 1px solid #1B1716;
@@ -1515,7 +1501,8 @@ const copyToClipboard = async (text) => {
   }
 
   .mobile-checkout-comment-input {
-    width: 358px;
+    width: 100%;
+    max-width: 100%;
     height: 51px;
     border-radius: 10px;
     padding: 16px 24px;
@@ -1539,7 +1526,8 @@ const copyToClipboard = async (text) => {
   }
 
   .mobile-checkout-send-button {
-    width: 358px;
+    width: 100%;
+    max-width: 100%;
     height: 35px;
     border-radius: 10px;
     padding: 8px 24px;
@@ -1565,8 +1553,9 @@ const copyToClipboard = async (text) => {
     bottom: 64px; /* Высота навигационной панели */
     left: 0;
     right: 0;
-    width: 390px;
-    height: 94px;
+    width: 100%;
+    max-width: 100%;
+    min-height: 94px;
     padding: 16px;
     gap: 8px;
     border-top-left-radius: 10px;
@@ -1582,7 +1571,8 @@ const copyToClipboard = async (text) => {
   }
 
   .mobile-checkout-pay-button {
-    width: 358px;
+    width: 100%;
+    max-width: 100%;
     height: 35px;
     border-radius: 10px;
     padding: 8px 24px;
@@ -1633,13 +1623,31 @@ const copyToClipboard = async (text) => {
 }
 
 /* Десктопная версия - показываем контент */
-@media (min-width: 391px) {
-  .desktop-checkout {
+@media (min-width: 551px) {
+  .is-desktop-device .desktop-checkout {
     display: block;
   }
 
-  .mobile-checkout {
+  .is-desktop-device .mobile-checkout {
     display: none;
   }
+}
+
+/* Также для десктопных устройств даже при масштабировании */
+.is-desktop-device .desktop-checkout {
+  display: block !important;
+}
+
+.is-desktop-device .mobile-checkout {
+  display: none !important;
+}
+
+/* Для мобильных устройств */
+.is-mobile-device .desktop-checkout {
+  display: none !important;
+}
+
+.is-mobile-device .mobile-checkout {
+  display: block !important;
 }
 </style>

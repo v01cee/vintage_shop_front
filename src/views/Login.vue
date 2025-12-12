@@ -173,7 +173,7 @@ const handleRegister = (data) => {
   width: 100%;
   max-width: 1300px;
   margin: 0 auto;
-  padding: 40px 20px 180px 32px;
+  padding: 40px 20px 180px 0;
   box-sizing: border-box;
 }
 
@@ -214,7 +214,7 @@ const handleRegister = (data) => {
   line-height: 100%;
   letter-spacing: -0.01em;
   color: #1B1716;
-  margin: 0 0 24px 0;
+  margin: 0;
   padding: 0;
   white-space: nowrap;
 }
@@ -397,7 +397,7 @@ const handleRegister = (data) => {
 /* Десктопная версия - всегда показываем десктопные стили */
 @include desktop {
   .recommended-section {
-    padding: 40px 20px 180px 32px;
+    padding: 40px 20px 180px 0;
   }
 
   .recommended-products {
@@ -409,7 +409,7 @@ const handleRegister = (data) => {
 
 /* Для десктопных устройств всегда применяем десктопные стили даже при масштабировании */
 .is-desktop-device .recommended-section {
-  padding: 40px 20px 180px 32px !important;
+  padding: 40px 20px 180px 0 !important;
 }
 
 .is-desktop-device .recommended-products {
@@ -438,21 +438,6 @@ const handleRegister = (data) => {
     margin-bottom: 40px;
     padding: 0 16px;
     box-sizing: border-box;
-  }
-
-  .is-mobile-device .recommended-title {
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-style: normal;
-    font-size: 16px;
-    line-height: 100%;
-    letter-spacing: -0.01em;
-    color: #1B1716;
-    width: auto;
-    height: auto;
-    margin: 0 0 24px 0;
-    padding: 0;
-    white-space: nowrap;
   }
 
   .is-mobile-device .recommended-products {
@@ -638,12 +623,6 @@ const handleRegister = (data) => {
 
   .is-mobile-device .recommended-products {
     gap: 6px;
-  }
-
-  .is-mobile-device .recommended-title {
-    font-size: 14px;
-    margin-bottom: 20px;
-    white-space: nowrap;
   }
 }
 </style>

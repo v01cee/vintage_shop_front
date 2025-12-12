@@ -1030,6 +1030,11 @@ onUnmounted(() => {
   box-sizing: border-box;
 }
 
+.app-header.cart-page .info-banner {
+  left: 32px;
+  top: 80px;
+}
+
 .info-banner-text {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
@@ -1265,6 +1270,15 @@ onUnmounted(() => {
     height: 75px;
   }
 
+  /* Баннер на странице корзины - центрирован и с отступом от суммы */
+  .is-mobile-device .app-header.cart-page .info-banner {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 75px;
+    width: calc(100% - 32px);
+    max-width: 100%;
+  }
+
   /* Уменьшаем высоту хедера на странице заказов */
   .is-mobile-device .app-header.orders-page {
     height: 100px;
@@ -1376,7 +1390,8 @@ onUnmounted(() => {
   /* Информационный баннер */
   .info-banner {
     position: absolute;
-    left: 16px;
+    left: 50%;
+    transform: translateX(-50%);
     top: 72px;
     width: calc(100% - 32px);
     max-width: 100%;
