@@ -455,19 +455,24 @@ const handleBannerLoad = () => {
   adBannerLoaded.value = true
 }
 
-// Проверяем наличие баннера при монтировании
+// Загружаем корзину и проверяем баннер при монтировании компонента
 onMounted(() => {
+  cartStore.fetchCart()
+  
+  // Проверяем наличие баннера
   if (typeof adBanner !== 'undefined' && adBanner) {
     console.log('Баннер импортирован:', adBanner)
+    console.log('Условие отображения:', {
+      routeName: route.name,
+      isNotCart: route.name !== 'Cart',
+      isNotOrders: route.name !== 'Orders',
+      isNotProduct: route.name !== 'Product',
+      adBannerLoaded: adBannerLoaded.value
+    })
   } else {
     console.warn('Баннер не импортирован')
     adBannerLoaded.value = false
   }
-})
-
-// Загружаем корзину при монтировании компонента
-onMounted(() => {
-  cartStore.fetchCart()
 })
 
 // Добавляем/убираем класс на body при открытии/закрытии меню для плавного сдвига контента
@@ -1450,27 +1455,32 @@ onUnmounted(() => {
   }
 
   /* Рекламный баннер для мобильных */
-  .mobile-ad-banner {
-    position: absolute;
-    left: 16px;
-    top: 108px;
-    width: calc(100% - 32px);
-    max-width: 100%;
-    height: 108px; /* Фиксированная высота для одинакового отображения */
-    display: block;
+  .is-mobile-device .mobile-ad-banner {
+    position: absolute !important;
+    left: 16px !important;
+    top: 108px !important;
+    width: calc(100% - 32px) !important;
+    max-width: 100% !important;
+    height: 108px !important; /* Фиксированная высота для одинакового отображения */
+    display: block !important;
     box-sizing: border-box;
     margin-bottom: 0;
     overflow: hidden; /* Обрезаем лишнее */
     border-radius: 10px; /* Скругление углов */
+    z-index: 5 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 
-  .ad-banner-image {
+  .is-mobile-device .ad-banner-image {
     width: 100%;
     height: 100%; /* Заполняем всю высоту контейнера */
-    display: block;
+    display: block !important;
     object-fit: cover; /* Заполняем контейнер, сохраняя пропорции */
     object-position: center;
     border-radius: 10px; /* Скругление углов для изображения */
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 
   /* Поисковая строка для мобильных */
