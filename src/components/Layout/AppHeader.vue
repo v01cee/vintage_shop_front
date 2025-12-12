@@ -165,7 +165,7 @@
       </div>
       
       <!-- Рекламный баннер для мобильных -->
-      <div v-if="route.name !== 'Cart' && route.name !== 'Orders' && route.name !== 'Product' && adBannerLoaded" class="mobile-ad-banner">
+      <div v-if="(route.name !== 'Cart' && route.name !== 'Orders' && route.name !== 'Product' && route.name !== undefined) && adBannerLoaded" class="mobile-ad-banner">
         <img 
           :src="adBanner" 
           alt="Реклама" 
