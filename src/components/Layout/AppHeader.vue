@@ -165,8 +165,14 @@
       </div>
       
       <!-- Рекламный баннер для мобильных -->
-      <div v-if="route.name !== 'Cart' && route.name !== 'Orders' && route.name !== 'Product'" class="mobile-ad-banner">
-        <img :src="adBanner" alt="Реклама" class="ad-banner-image" />
+      <div v-if="route.name !== 'Cart' && route.name !== 'Orders' && route.name !== 'Product' && adBannerLoaded" class="mobile-ad-banner">
+        <img 
+          :src="adBanner" 
+          alt="Реклама" 
+          class="ad-banner-image" 
+          @error="handleBannerError"
+          @load="handleBannerLoad"
+        />
       </div>
       
       <!-- Поисковая строка для мобильных -->
@@ -320,6 +326,7 @@ const cartStore = useCartStore()
 const searchQuery = ref('')
 const isFilterModalOpen = ref(false)
 const isMenuOpen = ref(false)
+const adBannerLoaded = ref(true) // По умолчанию показываем баннер
 // const isLoginModalOpen = ref(false) // TODO: Использовать в другом месте
 const selectedFilter = computed({
   get: () => productsStore.selectedFilter,
@@ -434,6 +441,29 @@ const handleOffer = () => {
   isMenuOpen.value = false
   console.log('Офферта')
 }
+
+const handleBannerError = (event) => {
+  // Если баннер не загрузился, скрываем его
+  console.warn('Рекламный баннер не загрузился:', event)
+  console.warn('Путь к баннеру:', adBanner)
+  adBannerLoaded.value = false
+}
+
+const handleBannerLoad = () => {
+  // Баннер успешно загрузился
+  console.log('Рекламный баннер успешно загружен')
+  adBannerLoaded.value = true
+}
+
+// Проверяем наличие баннера при монтировании
+onMounted(() => {
+  if (typeof adBanner !== 'undefined' && adBanner) {
+    console.log('Баннер импортирован:', adBanner)
+  } else {
+    console.warn('Баннер не импортирован')
+    adBannerLoaded.value = false
+  }
+})
 
 // Загружаем корзину при монтировании компонента
 onMounted(() => {
