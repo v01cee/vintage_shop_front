@@ -96,6 +96,11 @@ const displayedProducts = computed(() => {
   margin-top: 0; /* Убираем лишние отступы */
 }
 
+/* Для мобильных устройств уменьшаем отступ сверху */
+.is-mobile-device .products-grid {
+  padding-top: 8px !important;
+}
+
 /* Адаптация для планшетов и мобильных (до 768px, но не включая маленькие мобильные) */
 /* Но только для мобильных устройств */
 @media (min-width: 401px) and (max-width: 767px) {
@@ -106,7 +111,7 @@ const displayedProducts = computed(() => {
   .is-mobile-device .products-grid {
     grid-template-columns: repeat(2, 1fr); /* 2 колонки для планшетов и больших мобильных */
     gap: clamp(12px, 2vw, 16px);
-    padding: clamp(16px, 2vh, 24px) clamp(20px, 3vw, 32px);
+    padding: 8px clamp(20px, 3vw, 32px) clamp(16px, 2vh, 24px) clamp(20px, 3vw, 32px);
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
@@ -152,7 +157,7 @@ const displayedProducts = computed(() => {
   .is-mobile-device .products-grid {
     grid-template-columns: repeat(3, 1fr); /* 3 колонки для планшетов */
     gap: clamp(16px, 2vw, 24px);
-    padding: clamp(20px, 2vh, 28px) clamp(24px, 3vw, 36px);
+    padding: 8px clamp(24px, 3vw, 36px) clamp(20px, 2vh, 28px) clamp(24px, 3vw, 36px);
     justify-items: start; /* Выравниваем карточки по левому краю */
   }
 }
@@ -169,8 +174,7 @@ const displayedProducts = computed(() => {
   .is-mobile-device .products-grid {
     grid-template-columns: repeat(2, 1fr); /* 2 колонки с равной шириной */
     gap: 8px;
-    padding: 16px;
-    padding-top: 10px;
+    padding: 8px 16px 16px 16px;
   }
 }
 </style>
