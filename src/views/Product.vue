@@ -22,6 +22,49 @@
           </div>
         </div>
         <div class="product-info">
+          <!-- Фильтры/теги товара для десктопа -->
+          <div class="desktop-tags-container">
+            <span class="desktop-tag-item">
+              <span class="desktop-tag-text">Винтаж</span>
+              <img :src="arrowIcon" alt="Стрелка" class="desktop-tag-arrow-icon" />
+            </span>
+            <span class="desktop-tag-item">
+              <span class="desktop-tag-text">Туалетная вода</span>
+              <img :src="arrowIcon" alt="Стрелка" class="desktop-tag-arrow-icon" />
+            </span>
+            <span class="desktop-tag-item">
+              <span class="desktop-tag-text">L'Air du Temps</span>
+              <img :src="arrowIcon" alt="Стрелка" class="desktop-tag-arrow-icon" />
+            </span>
+            <span class="desktop-tag-item">
+              <span class="desktop-tag-text">EDT</span>
+              <img :src="arrowIcon" alt="Стрелка" class="desktop-tag-arrow-icon" />
+            </span>
+            <span class="desktop-tag-item">
+              <span class="desktop-tag-text">Спрей</span>
+              <img :src="arrowIcon" alt="Стрелка" class="desktop-tag-arrow-icon" />
+            </span>
+            <span class="desktop-tag-item">
+              <span class="desktop-tag-text">120 мл</span>
+              <img :src="arrowIcon" alt="Стрелка" class="desktop-tag-arrow-icon" />
+            </span>
+            <span class="desktop-tag-item">
+              <span class="desktop-tag-text">Полный</span>
+              <img :src="arrowIcon" alt="Стрелка" class="desktop-tag-arrow-icon" />
+            </span>
+            <span class="desktop-tag-item">
+              <span class="desktop-tag-text">Nina Ricci</span>
+              <img :src="arrowIcon" alt="Стрелка" class="desktop-tag-arrow-icon" />
+            </span>
+            <span class="desktop-tag-item">
+              <span class="desktop-tag-text">Франция</span>
+              <img :src="arrowIcon" alt="Стрелка" class="desktop-tag-arrow-icon" />
+            </span>
+            <span class="desktop-tag-item">
+              <span class="desktop-tag-text">1990-е</span>
+              <img :src="arrowIcon" alt="Стрелка" class="desktop-tag-arrow-icon" />
+            </span>
+          </div>
             <h1 class="product-title">Винтаж Туалетная вода L'Air du Temps Nina Ricci EDT Спрей 120 мл. Полный Франция 1990-е</h1>
           <div class="product-details">
             <div class="detail-item">
@@ -422,6 +465,49 @@ const closePhotoModal = () => {
   flex: 1 1 auto;
   min-width: 0;
   padding-left: 0;
+}
+
+/* Фильтры/теги товара для десктопа */
+.desktop-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.desktop-tag-item {
+  background: #1B171699;
+  border-radius: 10px;
+  padding: 8px 16px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.desktop-tag-item:hover {
+  opacity: 0.8;
+}
+
+.desktop-tag-text {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: #F6F5EC;
+}
+
+.desktop-tag-arrow-icon {
+  width: 6px;
+  height: 13px;
+  display: block;
+  filter: brightness(0) invert(1);
+  transform: rotate(180deg);
 }
 
 .product-title {
