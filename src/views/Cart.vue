@@ -9,7 +9,7 @@
         </div>
         <div class="cart-summary-header">
           <span class="total-label">Сумма:</span>
-          <span class="total-value">5650 Р</span>
+          <span class="total-value">5650 ₽</span>
           <span class="items-count">3 товара</span>
           <span class="items-separator"> • </span>
           <span class="items-unavailable">1 недоступен</span>
@@ -35,11 +35,11 @@
           <div class="item-quantity-cell">
             <div class="quantity-controls">
               <button class="quantity-button">-</button>
-              <input type="number" class="quantity-value" value="2" min="1" />
+              <span class="quantity-value">2</span>
               <button class="quantity-button">+</button>
             </div>
           </div>
-          <div class="item-price-cell">3650 Р</div>
+          <div class="item-price-cell">3650 ₽</div>
           <div class="item-article-cell">DH20 270</div>
         </div>
         <div class="cart-item">
@@ -53,18 +53,18 @@
           <div class="item-quantity-cell">
             <div class="quantity-controls">
               <button class="quantity-button">-</button>
-              <input type="number" class="quantity-value" value="1" min="1" />
+              <span class="quantity-value">1</span>
               <button class="quantity-button">+</button>
             </div>
           </div>
-          <div class="item-price-cell">3650 Р</div>
+          <div class="item-price-cell">3650 ₽</div>
           <div class="item-article-cell">DH20 270</div>
         </div>
         <div class="cart-item unavailable-item">
-          <button class="similar-button" type="button">
-            <span class="similar-button-text">Похожее</span>
-          </button>
           <div class="item-name-cell">
+            <button class="similar-button" type="button">
+              <span class="similar-button-text">Похожее</span>
+            </button>
             <div class="item-image-wrapper">
               <div class="item-image unavailable-image"></div>
               <div class="sold-badge">ПРОДАН</div>
@@ -73,10 +73,10 @@
           </div>
           <div class="item-quantity-cell">
             <div class="quantity-controls disabled-quantity">
-              <input type="number" class="quantity-value" value="0" disabled />
+              <span class="quantity-value">0</span>
             </div>
           </div>
-          <div class="item-price-cell">0 Р</div>
+          <div class="item-price-cell">0 ₽</div>
           <div class="item-article-cell">DH20 270</div>
         </div>
       </div>
@@ -88,9 +88,8 @@
           <span class="warning-bold">ВНИМАНИЕ!</span> При переходе к оформлению заказа товары будут зарезервированы за Вами на 30 минут. Если заказ не оплачен, то он будет отменен.
         </div>
       </div>
-      
-      <h2 class="recommended-title">Рекомендуем также</h2>
       <div class="recommended-section">
+        <h2 class="recommended-title">Рекомендуем также</h2>
         <div class="recommended-products">
           <div class="recommended-card" v-for="i in 10" :key="i">
             <div class="card-image-wrapper">
@@ -265,11 +264,11 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import deleteIcon from '../../иконка корзина.svg'
-import exampleImg from '../../пример.png'
-import cardViewsSvg from '../../значок просмотры на карточке .svg'
-import cartIconSvg from '../../значок корзины на кнопке в корзину.svg'
-import copyIconSvg from '../../значок копирования.svg'
+import deleteIcon from '@/assets/images/icon-delete.svg'
+import exampleImg from '@/assets/images/example.png'
+import cardViewsSvg from '@/assets/images/icon-views-card.svg'
+import cartIconSvg from '@/assets/images/icon-cart-button.svg'
+import copyIconSvg from '@/assets/images/icon-copy.svg'
 
 const router = useRouter()
 
@@ -379,7 +378,6 @@ const goToCheckout = () => {
   opacity: 1;
   display: flex;
   align-items: center;
-  margin-right: 8px;
 }
 
 
@@ -422,7 +420,6 @@ const goToCheckout = () => {
   opacity: 1;
   display: flex;
   align-items: center;
-  margin-left: 4px;
 }
 
 .table-headers-wrapper {
@@ -434,7 +431,6 @@ const goToCheckout = () => {
   grid-template-columns: 1fr 150px 120px 120px;
   gap: 40px;
   align-items: center;
-  position: relative;
 }
 
 .table-header {
@@ -453,59 +449,43 @@ const goToCheckout = () => {
 
 .header-name {
   opacity: 1;
-  position: absolute;
-  left: calc(314px + 230px - 37px - 32px);
-  justify-content: center;
-  width: 74px;
+  padding-left: 360px;
 }
 
 .header-quantity {
-  position: absolute;
-  left: calc(799px + 54px - 45.5px - 32px);
   justify-content: center;
-  width: 91px;
 }
 
 .header-price {
-  position: absolute;
-  left: calc(968px + 60px - 19.5px - 32px);
   justify-content: center;
-  width: 39px;
 }
 
 .header-article {
-  position: absolute;
-  left: calc(1128px + 60px - 31.5px - 32px);
-  justify-content: center;
-  width: 63px;
+  justify-content: flex-end;
 }
 
 .cart-items {
   width: 100%;
   box-sizing: border-box;
   margin-top: 16px;
-  display: flex;
-  flex-direction: column;
 }
 
 .cart-item {
   display: grid;
   grid-template-columns: 1fr 150px 120px 120px;
   gap: 40px;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 24px;
   padding: 0 32px;
   box-sizing: border-box;
-  position: relative;
 }
 
 .item-name-cell {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 24px;
   position: relative;
   padding-left: 75px;
-  min-height: 107px;
 }
 
 .delete-button {
@@ -519,11 +499,9 @@ const goToCheckout = () => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-top: 37.5px;
   position: absolute;
   left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  margin-top: 0;
 }
 
 .delete-icon {
@@ -601,19 +579,6 @@ const goToCheckout = () => {
   letter-spacing: -0.01em;
   color: #1B1716;
   opacity: 1;
-  border: none;
-  background: transparent;
-  width: 40px;
-  text-align: center;
-  padding: 0;
-  outline: none;
-  -moz-appearance: textfield;
-}
-
-.quantity-value::-webkit-outer-spin-button,
-.quantity-value::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
 }
 
 .item-price-cell {
@@ -646,11 +611,11 @@ const goToCheckout = () => {
   justify-content: flex-end;
 }
 
-.unavailable-item .similar-button {
-  width: 95px;
-  height: 32px;
+.similar-button {
+  width: 107px;
+  height: 35px;
   border-radius: 10px;
-  padding: 6px 20px;
+  padding: 8px 24px;
   background: rgba(27, 23, 22, 0.6);
   opacity: 1;
   border: none;
@@ -659,15 +624,15 @@ const goToCheckout = () => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-sizing: border-box;
+  margin-top: 36px;
   position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;
+  left: -45px;
+  box-sizing: border-box;
 }
 
 .similar-button-text {
+  width: 70px;
+  height: 19px;
   font-family: 'Inter', sans-serif;
   font-weight: 400;
   font-style: normal;
@@ -679,27 +644,22 @@ const goToCheckout = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  white-space: nowrap;
 }
 
 .item-image-wrapper {
   position: relative;
   flex-shrink: 0;
-  width: 107px;
-  height: 107px;
 }
 
 .unavailable-image {
   width: 107px;
   height: 107px;
   border-radius: 10px;
+  padding: 10px;
   background: rgba(27, 23, 22, 0.1);
   opacity: 1;
   box-sizing: border-box;
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .sold-badge {
@@ -707,8 +667,7 @@ const goToCheckout = () => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: auto;
-  min-width: 71px;
+  width: 71px;
   height: 19px;
   font-family: 'Inter', sans-serif;
   font-weight: 700;
@@ -724,7 +683,6 @@ const goToCheckout = () => {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  z-index: 1;
 }
 
 .disabled-quantity {
@@ -740,8 +698,28 @@ const goToCheckout = () => {
 
 .disabled-quantity .quantity-value {
   margin: 0;
-  cursor: not-allowed;
-  opacity: 1;
+}
+
+.empty-cart,
+.loading-cart {
+  width: 100%;
+  padding: 40px;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 20px;
+  color: #1B1716;
+  opacity: 0.6;
+}
+
+.empty-cart-mobile,
+.loading-cart-mobile {
+  width: 100%;
+  padding: 40px 16px;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: #1B1716;
+  opacity: 0.6;
 }
 
 .checkout-section {
@@ -805,6 +783,15 @@ const goToCheckout = () => {
   color: #640000;
 }
 
+.recommended-section {
+  width: 100%;
+  max-width: 100%;
+  padding: 0px 20px 60px 30px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  position: relative;
+}
+
 .recommended-title {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
@@ -813,34 +800,34 @@ const goToCheckout = () => {
   line-height: 100%;
   letter-spacing: -0.01em;
   color: #1B1716;
-  margin: 0 0 24px 0;
+  margin: 0 0 24px -16px;
   padding: 0;
-  padding-left: 0;
   width: 243px;
   height: 29px;
   opacity: 1;
 }
 
-.recommended-section {
-  width: 100%;
-  padding: 0 0 60px 0;
-  padding-left: 0px;
-  box-sizing: border-box;
-}
-
 .recommended-products {
   display: grid;
-  grid-template-columns: repeat(5, 236px);
+  grid-template-columns: repeat(5, minmax(0, 236px));
   gap: 16px;
-  justify-content: start;
+  justify-content: center;
+  max-width: 100%;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 .recommended-card {
   width: 236px;
+  max-width: 100%;
   background: #F6F5EC;
   border-radius: 10px;
   overflow: hidden;
   opacity: 1;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .card-image-wrapper {
@@ -849,6 +836,17 @@ const goToCheckout = () => {
   height: 287px;
   overflow: hidden;
   border-radius: 10px 10px 0 0;
+}
+
+.card-image-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.3));
+  pointer-events: none;
 }
 
 .card-image {
@@ -887,10 +885,12 @@ const goToCheckout = () => {
 }
 
 .card-content {
-  padding: 16px 16px 16px 0;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .card-prices {
@@ -955,7 +955,8 @@ const goToCheckout = () => {
 }
 
 .card-add-to-cart-button {
-  width: 230px;
+  width: 100%;
+  max-width: 230px;
   height: 35px;
   border-radius: 10px;
   padding: 8px 24px;
@@ -968,6 +969,7 @@ const goToCheckout = () => {
   justify-content: center;
   gap: 8px;
   opacity: 1;
+  box-sizing: border-box;
 }
 
 .card-cart-icon {
@@ -982,12 +984,11 @@ const goToCheckout = () => {
   font-style: normal;
   font-size: 16px;
   line-height: 100%;
-  letter-spacing: 0%;
+  letter-spacing: 0;
   color: #F6F5EC;
   opacity: 1;
-  width: auto;
-  height: auto;
-  white-space: nowrap;
+  width: 78px;
+  height: 19px;
 }
 
 /* Скрываем мобильную версию на десктопе */
@@ -1002,6 +1003,24 @@ const goToCheckout = () => {
   }
 }
 
+/* Адаптация сетки рекомендаций для разных размеров экрана */
+@media (max-width: 1400px) {
+  .recommended-products {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+  }
+  
+  .recommended-card {
+    width: 100%;
+    max-width: 236px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .recommended-products {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
 
 /* Явно показываем десктопную версию на экранах от 1280px (даже при масштабировании) */
 @media (min-width: 1280px) {
@@ -1024,8 +1043,7 @@ const goToCheckout = () => {
   .table-headers-wrapper,
   .cart-items,
   .checkout-section,
-  .recommended-section,
-  .recommended-title {
+  .recommended-section {
     display: none;
   }
 
@@ -1055,7 +1073,7 @@ const goToCheckout = () => {
   /* Заголовок с суммой */
   .mobile-cart-header {
     margin-bottom: 16px;
-    padding-top: 60px; /* Отступ от баннера */
+    padding-top: 16px;
   }
 
   .mobile-cart-summary {
