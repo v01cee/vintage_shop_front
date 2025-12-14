@@ -15,15 +15,6 @@
           class="menu-icon"
         />
       </button>
-      <button 
-        v-if="searchQuery && route.name !== 'Orders'"
-        type="button"
-        class="search-clear-button"
-        @click="clearSearch"
-        aria-label="Очистить поиск"
-      >
-        <span class="search-clear-x">×</span>
-      </button>
       <div v-if="route.name !== 'Orders'" class="search-wrapper">
         <input 
           type="text"
@@ -291,21 +282,21 @@ import { useProductsStore } from '@/stores/products'
 import { useCartStore } from '@/stores/cart'
 import { isMobileDevice as checkMobileDevice } from '@/utils/deviceDetector'
 // import LoginModal from '@/components/Auth/LoginModal.vue'
-import logoImage from '../../../лого главный экран.svg'
-import menuIcon from '../../../меню.svg'
-import menuOpenIcon from '../../../открытое меню.svg'
-import filterIcon from '../../../иконка фильтров.svg'
-import searchIcon from '../../../иконка лупы.svg'
-import loginIcon from '../../../значок аккаунта.svg'
-import ordersIcon from '../../../значок заказов.svg'
-import ordersActiveIcon from '../../../активная кнопка заказы.svg'
-import cartIcon from '../../../значок корзины.svg'
-import cartActiveIcon from '../../../активная иконка корзины.svg'
-import telegramIcon from '../../../значок ТГ.svg'
-import whatsappIcon from '../../../значок Whatshap.svg'
-import homeIcon from '../../../иконка главное меню.svg'
-import menuIconMobile from '../../../иконка меню.svg'
-import loginActiveIcon from '../../../активная иконка профиля.svg'
+import logoImage from '@/assets/images/logo-header.svg'
+import menuIcon from '@/assets/images/icon-menu.svg'
+import menuOpenIcon from '@/assets/images/icon-menu-open.svg'
+import filterIcon from '@/assets/images/icon-filter.svg'
+import searchIcon from '@/assets/images/icon-search.svg'
+import loginIcon from '@/assets/images/icon-account.svg'
+import ordersIcon from '@/assets/images/icon-orders.svg'
+import ordersActiveIcon from '@/assets/images/icon-orders-active.svg'
+import cartIcon from '@/assets/images/icon-cart.svg'
+import cartActiveIcon from '@/assets/images/icon-cart-active.svg'
+import telegramIcon from '@/assets/images/icon-telegram.svg'
+import whatsappIcon from '@/assets/images/icon-whatsapp.svg'
+import homeIcon from '@/assets/images/icon-home.svg'
+import menuIconMobile from '@/assets/images/icon-menu-mobile.svg'
+import loginActiveIcon from '@/assets/images/icon-profile-active.svg'
 
 const router = useRouter()
 const route = useRoute()
@@ -366,11 +357,6 @@ const handleSearch = () => {
   } else {
     productsStore.searchProducts('')
   }
-}
-
-const clearSearch = () => {
-  searchQuery.value = ''
-  productsStore.searchProducts('')
 }
 
 const toggleMenu = () => {
@@ -551,35 +537,6 @@ onUnmounted(() => {
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
   will-change: transform;
-}
-
-.search-clear-button {
-  position: absolute;
-  left: 309px;
-  top: 14.5px;
-  width: 26px;
-  height: 26px;
-  background-color: #FFFFFF;
-  border: 2px solid #640000;
-  border-radius: 0;
-  padding: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  z-index: 10;
-}
-
-.search-clear-x {
-  color: #640000;
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 1;
-  font-family: 'Inter', sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .search-wrapper {
@@ -1172,13 +1129,6 @@ onUnmounted(() => {
   display: flex !important;
 }
 
-.is-desktop-device .search-clear-button {
-  position: absolute !important;
-  left: 309px !important;
-  top: 14.5px !important;
-  display: flex !important;
-}
-
 .is-desktop-device .orders-button {
   position: absolute !important;
   left: 1117px !important;
@@ -1306,7 +1256,6 @@ onUnmounted(() => {
   /* Скрываем десктопные элементы только на мобильных */
   .is-mobile-device .menu-button,
   .is-mobile-device .search-wrapper,
-  .is-mobile-device .search-clear-button,
   .is-mobile-device .orders-button,
   .is-mobile-device .cart-button,
   .is-mobile-device .filter-button,
