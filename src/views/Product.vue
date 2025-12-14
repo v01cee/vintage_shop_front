@@ -287,12 +287,12 @@
 <script setup>
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
-import arrowIcon from '../../стрелочка.svg'
-import cartIconSvg from '../../значок корзины на кнопке в корзину.svg'
-import exampleImg from '../../пример.png'
-import copyIconSvg from '../../значок копирования.svg'
-import viewsIconSvg from '../../значок просмотров.svg'
-import cardViewsSvg from '../../значок просмотры на карточке .svg'
+import arrowIcon from '@/assets/images/icon-arrow.svg'
+import cartIconSvg from '@/assets/images/icon-cart-button.svg'
+import exampleImg from '@/assets/images/example.png'
+import copyIconSvg from '@/assets/images/icon-copy.svg'
+import viewsIconSvg from '@/assets/images/icon-views.svg'
+import cardViewsSvg from '@/assets/images/icon-views-card.svg'
 
 const route = useRoute()
 const productId = route.params.id
