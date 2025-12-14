@@ -1,139 +1,196 @@
-from fastapi import APIRouter, HTTPException
+"""
+API endpoints для товаров с БД
+"""
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy.orm import Session
+from sqlalchemy import or_
 from typing import List
-from app.schemas.product import Product, ProductCreate, ProductUpdate
+from app.database import get_db
+from app.models import Product, User
+from app.schemas.product import Product as ProductSchema, ProductCreate, ProductUpdate
+from app.exceptions import NotFoundError, ValidationError, DatabaseError
+from app.validators import validate_price, validate_quantity
+from app.auth import get_current_admin
 
 router = APIRouter()
 
-# Временные данные для разработки (потом заменим на БД)
-products_db = [
-    {
-        "id": 1,
-        "name": "Винтажная сумка",
-        "description": "Красивая винтажная сумка из кожи",
-        "price": 5000,
-        "image": "",
-        "category": "Аксессуары"
-    },
-    {
-        "id": 2,
-        "name": "Винтажное платье",
-        "description": "Элегантное платье 80-х годов",
-        "price": 8000,
-        "image": "",
-        "category": "Одежда"
-    },
-    {
-        "id": 3,
-        "name": "Винтажные духи",
-        "description": "Редкие духи из коллекции",
-        "price": 12000,
-        "image": "",
-        "category": "Парфюмерия"
-    },
-    {
-        "id": 4,
-        "name": "Винтажные часы",
-        "description": "Швейцарские часы 70-х",
-        "price": 15000,
-        "image": "",
-        "category": "Аксессуары"
-    },
-    {
-        "id": 5,
-        "name": "Винтажная куртка",
-        "description": "Кожаная куртка в отличном состоянии",
-        "price": 10000,
-        "image": "",
-        "category": "Одежда"
-    },
-    {
-        "id": 6,
-        "name": "Винтажная косметика",
-        "description": "Ретро косметика из коллекции",
-        "price": 3000,
-        "image": "",
-        "category": "Косметика"
-    },
-    {
-        "id": 7,
-        "name": "Винтажные очки",
-        "description": "Стильные очки 90-х",
-        "price": 4000,
-        "image": "",
-        "category": "Аксессуары"
-    },
-    {
-        "id": 8,
-        "name": "Винтажное украшение",
-        "description": "Серебряное кольцо с камнем",
-        "price": 6000,
-        "image": "",
-        "category": "Аксессуары"
-    },
-    {
-        "id": 9,
-        "name": "Винтажная блузка",
-        "description": "Шелковая блузка в винтажном стиле",
-        "price": 4500,
-        "image": "",
-        "category": "Одежда"
-    },
-    {
-        "id": 10,
-        "name": "Винтажный парфюм",
-        "description": "Классический аромат",
-        "price": 7000,
-        "image": "",
-        "category": "Парфюмерия"
-    }
-]
+
+@router.get("/products", response_model=List[ProductSchema])
+async def get_products(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=1000),
+    category: str = Query(None),
+    is_available: bool = Query(None),
+    db: Session = Depends(get_db)
+):
+    """
+    Получить список товаров
+    
+    - **skip**: Количество пропущенных записей (для пагинации)
+    - **limit**: Максимальное количество записей (1-1000)
+    - **category**: Фильтр по категории (опционально)
+    - **is_available**: Фильтр по доступности (опционально)
+    """
+    query = db.query(Product)
+    
+    if category:
+        query = query.filter(Product.category == category)
+    
+    if is_available is not None:
+        query = query.filter(Product.is_available == is_available)
+    
+    products = query.offset(skip).limit(limit).all()
+    return products
 
 
-@router.get("/products", response_model=List[Product])
-async def get_products(skip: int = 0, limit: int = 100):
-    """Получить список всех товаров"""
-    return products_db[skip:skip + limit]
+@router.get("/products/search", response_model=List[ProductSchema])
+async def search_products(
+    q: str = Query(..., min_length=1, description="Поисковый запрос"),
+    db: Session = Depends(get_db)
+):
+    """
+    Поиск товаров по названию, описанию или артикулу
+    
+    - **q**: Поисковый запрос (минимум 1 символ)
+    """
+    search_term = f"%{q.lower()}%"
+    products = db.query(Product).filter(
+        or_(
+            Product.name.ilike(search_term),
+            Product.description.ilike(search_term),
+            Product.article.ilike(search_term)
+        )
+    ).all()
+    return products
 
 
-@router.get("/products/{product_id}", response_model=Product)
-async def get_product(product_id: int):
-    """Получить товар по ID"""
-    product = next((p for p in products_db if p["id"] == product_id), None)
+@router.get("/products/{product_id}", response_model=ProductSchema)
+async def get_product(product_id: int, db: Session = Depends(get_db)):
+    """
+    Получить товар по ID
+    
+    Автоматически увеличивает счетчик просмотров.
+    
+    - **product_id**: ID товара
+    """
+    product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
-        raise HTTPException(status_code=404, detail="Товар не найден")
+        raise NotFoundError("Товар")
+    
+    # Увеличиваем счетчик просмотров
+    try:
+        product.views = (product.views or 0) + 1
+        db.commit()
+        db.refresh(product)
+    except Exception as e:
+        db.rollback()
+        # Не прерываем выполнение, если не удалось обновить просмотры
+    
     return product
 
 
-@router.post("/products", response_model=Product, status_code=201)
-async def create_product(product: ProductCreate):
-    """Создать новый товар"""
-    new_id = max([p["id"] for p in products_db], default=0) + 1
-    new_product = {
-        "id": new_id,
-        **product.dict()
-    }
-    products_db.append(new_product)
-    return new_product
-
-
-@router.put("/products/{product_id}", response_model=Product)
-async def update_product(product_id: int, product: ProductUpdate):
-    """Обновить товар"""
-    product_index = next((i for i, p in enumerate(products_db) if p["id"] == product_id), None)
-    if product_index is None:
-        raise HTTPException(status_code=404, detail="Товар не найден")
+@router.post("/products", response_model=ProductSchema, status_code=status.HTTP_201_CREATED)
+async def create_product(
+    product: ProductCreate,
+    current_user: User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    """
+    Создать новый товар
     
-    updated_product = {**products_db[product_index], **product.dict(exclude_unset=True)}
-    products_db[product_index] = updated_product
-    return updated_product
+    Требует права администратора.
+    
+    - **name**: Название товара (обязательно)
+    - **price**: Цена от поставщика (обязательно, валидируется)
+    - **boutique_price**: Цена в бутиках (опционально)
+    - **article**: Артикул товара (опционально)
+    - **quantity**: Количество на складе (по умолчанию 1, валидируется)
+    - **category**: Категория (опционально)
+    - **description**: Описание (опционально)
+    - **image**: Главное изображение URL (опционально)
+    - **images**: Список дополнительных изображений (опционально)
+    - **tags**: Список тегов (опционально)
+    - **is_available**: Доступен ли товар (по умолчанию True)
+    """
+    # Валидация
+    validate_price(product.price)
+    if product.boutique_price:
+        validate_price(product.boutique_price)
+    validate_quantity(product.quantity or 1)
+    
+    try:
+        new_product = Product(**product.dict())
+        db.add(new_product)
+        db.commit()
+        db.refresh(new_product)
+        return new_product
+    except Exception as e:
+        db.rollback()
+        raise DatabaseError(f"Ошибка при создании товара: {str(e)}")
 
 
-@router.delete("/products/{product_id}", status_code=204)
-async def delete_product(product_id: int):
-    """Удалить товар"""
-    product_index = next((i for i, p in enumerate(products_db) if p["id"] == product_id), None)
-    if product_index is None:
-        raise HTTPException(status_code=404, detail="Товар не найден")
-    products_db.pop(product_index)
-    return None
+@router.put("/products/{product_id}", response_model=ProductSchema)
+async def update_product(
+    product_id: int,
+    product: ProductUpdate,
+    current_user: User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    """
+    Обновить товар
+    
+    Требует права администратора.
+    
+    - **product_id**: ID товара
+    - Можно обновить любые поля из ProductUpdate
+    """
+    db_product = db.query(Product).filter(Product.id == product_id).first()
+    if not db_product:
+        raise NotFoundError("Товар")
+    
+    # Валидация обновляемых полей
+    update_data = product.dict(exclude_unset=True)
+    
+    if "price" in update_data:
+        validate_price(update_data["price"])
+    if "boutique_price" in update_data and update_data["boutique_price"]:
+        validate_price(update_data["boutique_price"])
+    if "quantity" in update_data:
+        validate_quantity(update_data["quantity"])
+    
+    try:
+        for field, value in update_data.items():
+            setattr(db_product, field, value)
+        
+        db.commit()
+        db.refresh(db_product)
+        return db_product
+    except Exception as e:
+        db.rollback()
+        raise DatabaseError(f"Ошибка при обновлении товара: {str(e)}")
 
+
+@router.delete("/products/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_product(
+    product_id: int,
+    current_user: User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    """
+    Удалить товар
+    
+    Требует права администратора.
+    
+    - **product_id**: ID товара
+    """
+    product = db.query(Product).filter(Product.id == product_id).first()
+    if not product:
+        raise NotFoundError("Товар")
+    
+    try:
+        db.delete(product)
+        db.commit()
+        return None
+    except Exception as e:
+        db.rollback()
+        raise DatabaseError(f"Ошибка при удалении товара: {str(e)}")
