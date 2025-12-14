@@ -334,8 +334,8 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import copyIconSvg from '../../значок копирования.svg'
-import deleteIcon from '../../иконка корзина.svg'
+import copyIconSvg from '@/assets/images/icon-copy.svg'
+import deleteIcon from '@/assets/images/icon-delete.svg'
 
 const router = useRouter()
 
