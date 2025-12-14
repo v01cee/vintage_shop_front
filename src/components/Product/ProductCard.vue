@@ -24,9 +24,9 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import exampleImg from '../../../пример.png'
-import cardViewsSvg from '../../../значок просмотры на карточке .svg'
-import cartIconSvg from '../../../значок корзины на кнопке в корзину.svg'
+import exampleImg from '@/assets/images/example.png'
+import cardViewsSvg from '@/assets/images/icon-views-card.svg'
+import cartIconSvg from '@/assets/images/icon-cart-button.svg'
 
 const props = defineProps({
   product: {
