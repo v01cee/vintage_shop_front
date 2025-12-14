@@ -470,12 +470,12 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import searchIcon from '../../лупа в заказах.svg'
-import arrowIcon from '../../стрелочка в заказах .svg'
-import copyIcon from '../../значок копирования.svg'
-import activeRadioIcon from '../../иконка выбора активная.svg'
-import inactiveRadioIcon from '../../иконка выбора не активная.svg'
-import deleteIcon from '../../иконка корзина.svg'
+import searchIcon from '@/assets/images/icon-search-orders.svg'
+import arrowIcon from '@/assets/images/icon-arrow-orders.svg'
+import copyIcon from '@/assets/images/icon-copy.svg'
+import activeRadioIcon from '@/assets/images/icon-radio-active.svg'
+import inactiveRadioIcon from '@/assets/images/icon-radio-inactive.svg'
+import deleteIcon from '@/assets/images/icon-delete.svg'
 
 const router = useRouter()
 
