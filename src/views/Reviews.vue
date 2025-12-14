@@ -172,7 +172,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import arrowIcon from '../../стрелочка в заказах .svg'
+import arrowIcon from '@/assets/images/icon-arrow-orders.svg'
 
 const expandedReviews = ref({
   0: true,  // Первый - развернут
