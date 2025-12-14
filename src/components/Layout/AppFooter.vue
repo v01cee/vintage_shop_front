@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import logoSvg from '../../../лого на футер.svg'
+import logoSvg from '@/assets/images/logo-footer.svg'
 </script>
 
 <style scoped>
