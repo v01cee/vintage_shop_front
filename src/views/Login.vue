@@ -49,9 +49,9 @@
 <script setup>
 import { ref } from 'vue'
 import LoginModal from '@/components/Auth/LoginModal.vue'
-import exampleImg from '../../пример.png'
-import cardViewsSvg from '../../значок просмотры на карточке .svg'
-import cartIconSvg from '../../значок корзины на кнопке в корзину.svg'
+import exampleImg from '@/assets/images/example.png'
+import cardViewsSvg from '@/assets/images/icon-views-card.svg'
+import cartIconSvg from '@/assets/images/icon-cart-button.svg'
 
 const isLoginModalOpen = ref(false)
 
@@ -173,7 +173,7 @@ const handleRegister = (data) => {
   width: 100%;
   max-width: 1300px;
   margin: 0 auto;
-  padding: 40px 20px 180px 0;
+  padding: 40px 0 180px 0;
   box-sizing: border-box;
 }
 
@@ -215,15 +215,18 @@ const handleRegister = (data) => {
   letter-spacing: -0.01em;
   color: #1B1716;
   margin: 0;
-  padding: 0;
+  padding: 0 0 0 clamp(32px, 3vw, 40px);
   white-space: nowrap;
+  text-align: left;
 }
 
 .recommended-products {
   display: grid;
-  grid-template-columns: repeat(5, 236px);
-  gap: 16px;
-  justify-content: center;
+  grid-template-columns: repeat(5, 1fr);
+  gap: clamp(16px, 1.5vw, 24px);
+  padding: 0 clamp(32px, 3vw, 40px);
+  box-sizing: border-box;
+  justify-items: start;
 }
 
 .recommended-card {
@@ -397,29 +400,38 @@ const handleRegister = (data) => {
 /* Десктопная версия - всегда показываем десктопные стили */
 @include desktop {
   .recommended-section {
-    padding: 40px 20px 180px 0;
+    padding: 40px 0 180px 0;
   }
 
   .recommended-products {
-    grid-template-columns: repeat(5, 236px);
-    gap: 16px;
-    justify-content: center;
+    grid-template-columns: repeat(5, 1fr);
+    gap: clamp(16px, 1.5vw, 24px);
+    padding: 0 clamp(32px, 3vw, 40px);
+    justify-items: start;
   }
 }
 
 /* Для десктопных устройств всегда применяем десктопные стили даже при масштабировании */
 .is-desktop-device .recommended-section {
-  padding: 40px 20px 180px 0 !important;
+  padding: 40px 0 180px 0 !important;
+}
+
+.is-desktop-device .recommended-title {
+  padding-left: clamp(32px, 3vw, 40px) !important;
+  text-align: left !important;
 }
 
 .is-desktop-device .recommended-products {
-  grid-template-columns: repeat(5, 236px) !important;
-  gap: 16px !important;
-  justify-content: center !important;
+  grid-template-columns: repeat(5, 1fr) !important;
+  gap: clamp(16px, 1.5vw, 24px) !important;
+  padding-left: clamp(32px, 3vw, 40px) !important;
+  padding-right: clamp(32px, 3vw, 40px) !important;
+  justify-items: start !important;
 }
 
 .is-desktop-device .recommended-card {
-  width: 236px !important;
+  max-width: 236px !important;
+  width: 100% !important;
 }
 
 .is-desktop-device .card-image-wrapper {
@@ -440,12 +452,20 @@ const handleRegister = (data) => {
     box-sizing: border-box;
   }
 
+  .is-mobile-device .recommended-title {
+    text-align: left;
+    padding-left: 0;
+    margin-left: 0;
+  }
+
   .is-mobile-device .recommended-products {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
+    padding: 0;
     width: 100%;
     box-sizing: border-box;
+    justify-items: start;
   }
 
   .is-mobile-device .recommended-card {
