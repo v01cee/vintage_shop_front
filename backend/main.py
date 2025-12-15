@@ -14,6 +14,7 @@ from app.exceptions import BaseAPIException
 from app.tasks.order_tasks import cancel_unpaid_orders
 import logging
 import atexit
+import os
 
 app = FastAPI(
     title="Vintage Shop API",
@@ -33,13 +34,12 @@ from app.api.v1 import users as users_router
 # Декораторы применяются напрямую в роутерах через app.state.limiter
 
 # Настройка CORS для работы с фронтендом
-# Захардкоженные CORS origins
-cors_origins = [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "http://localhost:5173",
-    "https://109.73.202.83"
-]
+# origins берём из переменной окружения CORS_ORIGINS (через запятую)
+raw_cors = os.getenv(
+    "CORS_ORIGINS",
+    "http://localhost:3000,http://localhost:3001,http://localhost:5173"
+)
+cors_origins = [origin.strip() for origin in raw_cors.split(",") if origin.strip()]
 
 app.add_middleware(
     CORSMiddleware,
@@ -118,12 +118,9 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         error_dict = error.copy()
         # Конвертируем bytes в строку, если есть
         if 'input' in error_dict and isinstance(error_dict['input'], bytes):
-            try:
-                error_dict['input'] = error_dict['input'].decode('utf-8')
-            except:
-                error_dict['input'] = str(error_dict['input'])
+            error_dict['input'] = error_dict['input'].decode('utf-8', errors='replace')
         errors.append(error_dict)
-    
+
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content={"detail": errors}
@@ -131,27 +128,10 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 
 @app.exception_handler(SQLAlchemyError)
-async def database_exception_handler(request: Request, exc: SQLAlchemyError):
-    """Обработка ошибок базы данных"""
-    import traceback
-    error_details = traceback.format_exc()
-    print(f"Database error: {str(exc)}")
-    print(f"Traceback: {error_details}")
+async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
+    """Обработка ошибок SQLAlchemy"""
+    logging.exception("Database error")
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"detail": f"Ошибка базы данных: {str(exc)}"}
+        content={"detail": "Ошибка базы данных"}
     )
-
-
-@app.exception_handler(Exception)
-async def general_exception_handler(request: Request, exc: Exception):
-    """Обработка общих исключений"""
-    import traceback
-    error_details = traceback.format_exc()
-    print(f"Unhandled exception: {str(exc)}")
-    print(f"Traceback: {error_details}")
-    return JSONResponse(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"detail": f"Внутренняя ошибка сервера: {str(exc)}"}
-    )
-

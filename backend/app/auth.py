@@ -3,6 +3,8 @@ JWT аутентификация
 """
 from datetime import datetime, timedelta
 from typing import Optional
+import os
+
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
@@ -13,10 +15,10 @@ from app.models import User
 from app.exceptions import UnauthorizedError
 
 # Настройки JWT
-# Захардкоженный SECRET_KEY
-SECRET_KEY = "vintage-shop-secret-key-2025-production-change-if-needed"
+# SECRET_KEY и время жизни токена берём из переменных окружения
+SECRET_KEY = os.getenv("SECRET_KEY", "change-me-in-prod")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30 * 24 * 60  # 30 дней
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", str(30 * 24 * 60)))  # 30 дней по умолчанию
 
 # Настройки для хеширования паролей
 # Используем bcrypt с явной настройкой
@@ -55,7 +57,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    
+
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -78,46 +80,11 @@ async def get_current_user(
     payload = verify_token(token)
     if payload is None:
         raise UnauthorizedError("Неверный токен")
-    
-    user_id_str = payload.get("sub")
-    if user_id_str is None:
-        raise UnauthorizedError("Неверный токен")
-    
-    # Конвертируем строку обратно в int
-    try:
-        user_id = int(user_id_str)
-    except (ValueError, TypeError):
-        raise UnauthorizedError("Неверный формат токена")
-    
+
+    user_id = payload.get("sub")
     user = db.query(User).filter(User.id == user_id).first()
+
     if user is None:
         raise UnauthorizedError("Пользователь не найден")
-    
+
     return user
-
-
-async def get_current_user_optional(
-    token: Optional[str] = Depends(oauth2_scheme),
-    db: Session = Depends(get_db)
-) -> Optional[User]:
-    """Получить текущего пользователя (опционально, для публичных endpoints)"""
-    if token is None:
-        return None
-    
-    try:
-        return await get_current_user(token, db)
-    except:
-        return None
-
-
-async def get_current_admin(
-    current_user: User = Depends(get_current_user)
-) -> User:
-    """Получить текущего пользователя с проверкой прав администратора"""
-    from app.models import UserRole
-    if current_user.role != UserRole.ADMIN:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Требуются права администратора"
-        )
-    return current_user

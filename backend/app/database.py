@@ -1,9 +1,12 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Захардкоженные данные подключения к PostgreSQL
-DATABASE_URL = "postgresql://admin:123b1h23b1kgasfbasfas123@109.73.202.83:5435/testing_postgres"
+# Строку подключения берём из переменных окружения
+# В продакшене ОБЯЗАТЕЛЬНО задать DATABASE_URL
+# Для локальной разработки по умолчанию используем SQLite
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./dev.db")
 
 # Создаем движок SQLAlchemy
 engine = create_engine(
@@ -20,8 +23,7 @@ Base = declarative_base()
 
 
 def get_db():
-    """
-    Dependency для получения сессии БД.
+    """Dependency для получения сессии БД.
     Используется в FastAPI endpoints через Depends(get_db)
     """
     db = SessionLocal()

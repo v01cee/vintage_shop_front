@@ -1,4 +1,5 @@
 from logging.config import fileConfig
+import os
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
@@ -13,8 +14,10 @@ from app.models import *  # Импортируем все модели для Al
 # access to the values within the .ini file in use.
 config = context.config
 
-# Захардкоженный DATABASE_URL
-database_url = "postgresql://admin:123b1h23b1kgasfbasfas123@109.73.202.83:5435/testing_postgres"
+# DATABASE_URL берём из переменных окружения (как и в app.database)
+# В продакшене ОБЯЗАТЕЛЬНО задать DATABASE_URL
+# Для локальной разработки по умолчанию используем SQLite
+database_url = os.getenv("DATABASE_URL", "sqlite:///./dev.db")
 config.set_main_option("sqlalchemy.url", database_url)
 
 # Interpret the config file for Python logging.
@@ -78,7 +81,12 @@ def run_migrations_online() -> None:
             context.run_migrations()
 
 
-if context.is_offline_mode():
-    run_migrations_online()
-else:
-    run_migrations_online()
+def run_migrations() -> None:
+    """Run migrations in either 'online' or 'offline' mode."""
+    if context.is_offline_mode():
+        run_migrations_offline()
+    else:
+        run_migrations_online()
+
+
+run_migrations()
