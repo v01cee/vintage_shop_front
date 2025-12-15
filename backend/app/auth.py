@@ -13,12 +13,8 @@ from app.models import User
 from app.exceptions import UnauthorizedError
 
 # Настройки JWT
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here-change-in-production")
+# Захардкоженный SECRET_KEY
+SECRET_KEY = "vintage-shop-secret-key-2025-production-change-if-needed"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30 * 24 * 60  # 30 дней
 

@@ -2,16 +2,22 @@ from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.exc import SQLAlchemyError
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from app.api.v1 import products, cart, users, orders, order_comments, reviews
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.interval import IntervalTrigger
+from app.api.v1 import products, cart, users, orders, order_comments, reviews, uploads
 from app.exceptions import BaseAPIException
+from app.tasks.order_tasks import cancel_unpaid_orders
+import logging
+import atexit
 
 app = FastAPI(
     title="Vintage Shop API",
-    description="API для торговой площадки винтажных товаров",
+    description="API для магазина винтажных товаров",
     version="2.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
@@ -27,13 +33,13 @@ from app.api.v1 import users as users_router
 # Декораторы применяются напрямую в роутерах через app.state.limiter
 
 # Настройка CORS для работы с фронтендом
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-cors_origins_str = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:3001,http://localhost:5173")
-cors_origins = cors_origins_str.split(",") if cors_origins_str else []
+# Захардкоженные CORS origins
+cors_origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:5173",
+    "https://109.73.202.83"
+]
 
 app.add_middleware(
     CORSMiddleware,
@@ -43,6 +49,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Подключение статических файлов для загруженных изображений
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 # Подключение роутеров
 app.include_router(products.router, prefix="/api/v1", tags=["products"])
 app.include_router(cart.router, prefix="/api/v1", tags=["cart"])
@@ -50,6 +59,7 @@ app.include_router(users.router, prefix="/api/v1", tags=["users"])
 app.include_router(orders.router, prefix="/api/v1", tags=["orders"])
 app.include_router(order_comments.router, prefix="/api/v1", tags=["order-comments"])
 app.include_router(reviews.router, prefix="/api/v1", tags=["reviews"])
+app.include_router(uploads.router, prefix="/api/v1", tags=["uploads"])
 
 # Применяем rate limiting к endpoints после подключения роутеров
 # Находим нужные endpoints и применяем декораторы
@@ -58,6 +68,25 @@ for route in users.router.routes:
         route.endpoint = limiter.limit("5/minute")(route.endpoint)
     elif hasattr(route, 'path') and route.path == "/users/register":
         route.endpoint = limiter.limit("10/hour")(route.endpoint)
+
+# Настройка фоновых задач
+scheduler = BackgroundScheduler()
+scheduler.add_job(
+    cancel_unpaid_orders,
+    trigger=IntervalTrigger(minutes=1),  # Запуск каждую минуту
+    id='cancel_unpaid_orders',
+    name='Отмена неоплаченных заказов',
+    replace_existing=True
+)
+scheduler.start()
+
+# Останавливаем scheduler при завершении приложения
+atexit.register(lambda: scheduler.shutdown())
+
+# Настройка логирования для фоновых задач
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.info("Фоновая задача для отмены неоплаченных заказов запущена (проверка каждую минуту)")
 
 
 @app.get("/")

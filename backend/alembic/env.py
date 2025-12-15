@@ -13,14 +13,8 @@ from app.models import *  # Импортируем все модели для Al
 # access to the values within the .ini file in use.
 config = context.config
 
-# Получаем URL БД из переменных окружения
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-# Переопределяем sqlalchemy.url из переменных окружения
-database_url = os.getenv("DATABASE_URL", "postgresql://user:password@localhost:5432/vintage_shop")
+# Захардкоженный DATABASE_URL
+database_url = "postgresql://admin:123b1h23b1kgasfbasfas123@109.73.202.83:5435/testing_postgres"
 config.set_main_option("sqlalchemy.url", database_url)
 
 # Interpret the config file for Python logging.

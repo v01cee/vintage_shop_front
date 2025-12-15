@@ -61,10 +61,12 @@
           <div class="item-article-cell">DH20 270</div>
         </div>
         <div class="cart-item unavailable-item">
-          <div class="item-name-cell">
+          <div class="similar-wrapper">
             <button class="similar-button" type="button">
               <span class="similar-button-text">Похожее</span>
             </button>
+          </div>
+          <div class="item-name-cell">
             <div class="item-image-wrapper">
               <div class="item-image unavailable-image"></div>
               <div class="sold-badge">ПРОДАН</div>
@@ -470,24 +472,38 @@ const goToCheckout = () => {
   width: 100%;
   box-sizing: border-box;
   margin-top: 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 .cart-item {
   display: grid;
   grid-template-columns: 1fr 150px 120px 120px;
   gap: 40px;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 24px;
   padding: 0 32px;
   box-sizing: border-box;
+  position: relative;
+}
+
+.similar-wrapper {
+  position: absolute;
+  left: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.cart-item.unavailable-item {
 }
 
 .item-name-cell {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 24px;
   position: relative;
   padding-left: 75px;
+  min-height: 107px;
 }
 
 .delete-button {
@@ -501,9 +517,10 @@ const goToCheckout = () => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-top: 37.5px;
   position: absolute;
   left: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .delete-icon {
@@ -534,6 +551,10 @@ const goToCheckout = () => {
   align-items: center;
   flex: 1;
   margin-left: 8px;
+}
+
+.unavailable-item .item-name-text {
+  margin-left: 24px;
 }
 
 .item-quantity-cell {
@@ -626,11 +647,9 @@ const goToCheckout = () => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-top: 36px;
-  position: absolute;
-  left: -45px;
   box-sizing: border-box;
 }
+
 
 .similar-button-text {
   width: 70px;
@@ -651,13 +670,14 @@ const goToCheckout = () => {
 .item-image-wrapper {
   position: relative;
   flex-shrink: 0;
+  width: 107px;
+  height: 107px;
 }
 
 .unavailable-image {
   width: 107px;
   height: 107px;
   border-radius: 10px;
-  padding: 10px;
   background: rgba(27, 23, 22, 0.1);
   opacity: 1;
   box-sizing: border-box;

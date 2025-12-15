@@ -1,12 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
-
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://admin:password@localhost:5432/vintage_shop")
+# Захардкоженные данные подключения к PostgreSQL
+DATABASE_URL = "postgresql://admin:123b1h23b1kgasfbasfas123@109.73.202.83:5435/testing_postgres"
 
 # Создаем движок SQLAlchemy
 engine = create_engine(
