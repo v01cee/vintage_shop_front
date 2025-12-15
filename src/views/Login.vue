@@ -9,7 +9,7 @@
         <button class="login-button" @click="openLoginModal">Войти</button>
       </div>
       <div class="recommended-section">
-        <h2 class="recommended-title">Рекомендуем также</h2>
+        <h2 class="recommended-title">Рекомендуем</h2>
         <div class="recommended-products">
           <div class="recommended-card" v-for="i in 10" :key="i">
             <div class="card-image-wrapper">
@@ -171,10 +171,11 @@ const handleRegister = (data) => {
 
 .recommended-section {
   width: 100%;
-  max-width: 1300px;
-  margin: 0 auto;
-  padding: 40px 0 180px 0;
+  max-width: 100%;
+  padding: 0px 20px 60px 30px;
   box-sizing: border-box;
+  overflow-x: hidden;
+  position: relative;
 }
 
 /* Мобильная версия страницы логина */
@@ -214,19 +215,21 @@ const handleRegister = (data) => {
   line-height: 100%;
   letter-spacing: -0.01em;
   color: #1B1716;
-  margin: 0;
-  padding: 0 0 0 clamp(32px, 3vw, 40px);
-  white-space: nowrap;
-  text-align: left;
+  margin: 0 0 24px -16px;
+  padding: 0;
+  width: 243px;
+  height: 29px;
+  opacity: 1;
 }
 
 .recommended-products {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: clamp(16px, 1.5vw, 24px);
-  padding: 0 clamp(32px, 3vw, 40px);
-  box-sizing: border-box;
-  justify-items: start;
+  grid-template-columns: repeat(5, minmax(0, 236px));
+  gap: 16px;
+  justify-content: center;
+  max-width: 100%;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 .recommended-card {
@@ -400,33 +403,32 @@ const handleRegister = (data) => {
 /* Десктопная версия - всегда показываем десктопные стили */
 @include desktop {
   .recommended-section {
-    padding: 40px 0 180px 0;
+    padding: 0px 20px 60px 30px;
   }
 
   .recommended-products {
-    grid-template-columns: repeat(5, 1fr);
-    gap: clamp(16px, 1.5vw, 24px);
-    padding: 0 clamp(32px, 3vw, 40px);
-    justify-items: start;
+    grid-template-columns: repeat(5, minmax(0, 236px));
+    gap: 16px;
+    justify-content: center;
   }
 }
 
 /* Для десктопных устройств всегда применяем десктопные стили даже при масштабировании */
 .is-desktop-device .recommended-section {
-  padding: 40px 0 180px 0 !important;
+  padding: 0px 20px 60px 30px !important;
 }
 
 .is-desktop-device .recommended-title {
-  padding-left: clamp(32px, 3vw, 40px) !important;
+  margin: 0 0 24px -16px !important;
+  padding: 0 !important;
   text-align: left !important;
 }
 
 .is-desktop-device .recommended-products {
-  grid-template-columns: repeat(5, 1fr) !important;
-  gap: clamp(16px, 1.5vw, 24px) !important;
-  padding-left: clamp(32px, 3vw, 40px) !important;
-  padding-right: clamp(32px, 3vw, 40px) !important;
-  justify-items: start !important;
+  grid-template-columns: repeat(5, minmax(0, 236px)) !important;
+  gap: 16px !important;
+  justify-content: center !important;
+  padding: 0 !important;
 }
 
 .is-desktop-device .recommended-card {
@@ -456,6 +458,7 @@ const handleRegister = (data) => {
     text-align: left;
     padding-left: 0;
     margin-left: 0;
+    font-size: 16px;
   }
 
   .is-mobile-device .recommended-products {

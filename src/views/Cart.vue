@@ -89,7 +89,7 @@
         </div>
       </div>
       <div class="recommended-section">
-        <h2 class="recommended-title">Рекомендуем также</h2>
+        <h2 class="recommended-title">Рекомендуем</h2>
         <div class="recommended-products">
           <div class="recommended-card" v-for="i in 10" :key="i">
             <div class="card-image-wrapper">
@@ -190,9 +190,14 @@
           
           <!-- Третий товар (ПРОДАН) -->
           <div class="mobile-cart-item mobile-cart-item-unavailable">
-            <div class="mobile-item-image-wrapper">
-              <div class="mobile-item-image-placeholder mobile-item-image-unavailable"></div>
-              <div class="mobile-sold-badge">ПРОДАН</div>
+            <div class="mobile-item-image-section">
+              <div class="mobile-item-image-wrapper">
+                <div class="mobile-item-image-placeholder mobile-item-image-unavailable"></div>
+                <div class="mobile-sold-badge">ПРОДАН</div>
+              </div>
+              <button class="mobile-similar-button" type="button">
+                <span class="mobile-similar-button-text">Похожее</span>
+              </button>
             </div>
             <div class="mobile-item-info">
               <div class="mobile-item-header">
@@ -212,9 +217,6 @@
                   <img :src="copyIconSvg" alt="Копировать" class="mobile-copy-icon" />
                 </button>
               </div>
-              <button class="mobile-similar-button" type="button">
-                <span class="mobile-similar-button-text">Похожее</span>
-              </button>
             </div>
           </div>
         </div>
@@ -1367,6 +1369,14 @@ const goToCheckout = () => {
 
   /* Проданный товар - opacity убран, чтобы товар не был мутным */
 
+  .mobile-item-image-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
   .mobile-item-image-wrapper {
     position: relative;
     width: 128px;
@@ -1412,7 +1422,6 @@ const goToCheckout = () => {
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    margin-top: 8px;
   }
 
   .mobile-similar-button-text {
@@ -1726,6 +1735,14 @@ const goToCheckout = () => {
     .mobile-item-image-wrapper {
       width: 100px;
       height: 100px;
+    }
+
+    .mobile-item-image-section {
+      width: 100px;
+    }
+
+    .mobile-similar-button {
+      width: 100px;
     }
 
     .mobile-item-title {

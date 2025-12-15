@@ -109,7 +109,7 @@
         </div>
       </div>
       <div class="recommended-section">
-        <h2 class="recommended-title">Рекомендуем также</h2>
+        <h2 class="recommended-title">Рекомендуем</h2>
         <div class="recommended-products">
           <div class="recommended-card" v-for="i in 10" :key="i">
             <div class="card-image-wrapper">

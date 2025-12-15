@@ -5,9 +5,8 @@
         <img :src="logoSvg" alt="Винтажчик магазин" class="logo-image" />
       </div>
       <div class="footer-links">
-        <a href="#" class="footer-link">Контакты</a>
-        <router-link to="/about-owner" class="footer-link">О сайте</router-link>
         <router-link to="/terms" class="footer-link">Условия</router-link>
+        <router-link to="/about-owner" class="footer-link">О сайте</router-link>
         <a href="#" class="footer-link">Офферта</a>
       </div>
     </div>

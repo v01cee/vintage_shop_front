@@ -125,13 +125,8 @@
         </div>
         <div class="nav-divider"></div>
         <div class="nav-column">
-          <a href="#" class="nav-link" @click.prevent="handleContacts">Контакты</a>
-          <router-link to="/about-owner" class="nav-link" @click="closeMenuOnNavigate">О сайте</router-link>
-        </div>
-        <div class="nav-divider"></div>
-        <div class="nav-column">
           <router-link to="/terms" class="nav-link" @click="closeMenuOnNavigate">Условия</router-link>
-          <a href="#" class="nav-link" @click.prevent="handleOffer">Офферта</a>
+          <router-link to="/about-owner" class="nav-link" @click="closeMenuOnNavigate">О сайте</router-link>
         </div>
       </div>
       
@@ -147,10 +142,8 @@
             <router-link to="/cart" class="mobile-menu-item" :class="{ active: route.name === 'Cart' }" @click="toggleMenu">Корзина</router-link>
             <router-link to="/orders" class="mobile-menu-item" @click="toggleMenu">Ваши заказы</router-link>
             <router-link to="/login" class="mobile-menu-item" @click="toggleMenu">Ваш профиль</router-link>
-            <a href="#" class="mobile-menu-item" @click="toggleMenu">Контакты</a>
-            <router-link to="/about-owner" class="mobile-menu-item" @click="toggleMenu">О сайте</router-link>
             <router-link to="/terms" class="mobile-menu-item" @click="toggleMenu">Условия</router-link>
-            <a href="#" class="mobile-menu-item" @click="toggleMenu">Офферта</a>
+            <router-link to="/about-owner" class="mobile-menu-item" @click="toggleMenu">О сайте</router-link>
           </nav>
         </div>
       </div>
@@ -407,19 +400,6 @@ const closeMenuOnNavigate = () => {
   isMenuOpen.value = false
 }
 
-const handleContacts = () => {
-  // Обработка клика на "Контакты"
-  // Можно добавить модальное окно или скролл к секции контактов
-  isMenuOpen.value = false
-  console.log('Контакты')
-}
-
-const handleOffer = () => {
-  // Обработка клика на "Офферта"
-  // Можно добавить модальное окно или переход на страницу
-  isMenuOpen.value = false
-  console.log('Офферта')
-}
 
 // Загружаем корзину при монтировании компонента
 onMounted(() => {
