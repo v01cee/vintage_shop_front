@@ -202,3 +202,5 @@ def test_get_orders_with_status_filter(client, auth_headers, test_product):
     assert isinstance(data, list)
     if len(data) > 0:
         assert all(order["status"] == "paid" for order in data)
+
+

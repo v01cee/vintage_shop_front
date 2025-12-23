@@ -147,3 +147,5 @@ curl -X GET "http://localhost:8000/api/v1/cart" \
 ```
 Статус код: `401 Unauthorized`
 
+
+

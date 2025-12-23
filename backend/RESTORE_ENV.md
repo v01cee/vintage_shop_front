@@ -75,3 +75,5 @@ cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost
 4. Раскомментируйте импорты `os` и `load_dotenv`
 5. Удалите этот файл после восстановления
 
+
+

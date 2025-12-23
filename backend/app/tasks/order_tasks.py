@@ -53,3 +53,5 @@ def cancel_unpaid_orders():
         logger.error(f"Ошибка при отмене неоплаченных заказов: {str(e)}", exc_info=True)
     finally:
         db.close()
+
+

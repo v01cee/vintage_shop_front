@@ -86,3 +86,5 @@ python test_api.py
 ### Тесты не запускаются
 Убедитесь, что установлен pytest: `pip install pytest pytest-asyncio httpx`
 
+
+

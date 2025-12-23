@@ -44,3 +44,5 @@ with engine.connect() as conn:
     print("\nТеперь можно применить миграцию командой:")
     print("alembic upgrade head")
 
+
+

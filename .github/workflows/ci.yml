@@ -47,3 +47,5 @@ jobs:
         CORS_ORIGINS: http://localhost:3000
       run: |
         pytest tests/ -v --tb=short
+
+

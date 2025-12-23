@@ -67,3 +67,5 @@ if __name__ == "__main__":
     # Тест 2: Попытка зарегистрировать того же пользователя
     test_register("test@example.com", "test123456", "Test User")
 
+
+

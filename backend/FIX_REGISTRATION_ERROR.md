@@ -101,3 +101,5 @@ python -c "from app.database import engine; engine.connect(); print('OK')"
 3. Убедитесь, что миграции применены: `alembic upgrade head`
 4. Проверьте, что таблица `users` существует в БД
 
+
+
